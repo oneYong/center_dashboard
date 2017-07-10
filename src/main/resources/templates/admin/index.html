@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<head>
+    <title>DashBoard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        전체현황 <small>기준일: 17.03.21</small>
+                    </h1>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div id="totalUser"></div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 클라우드 인프라 운영비</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
+                                    <span style="font-size: 13px;">2017.01.01 ~ 2017.03.21</span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;"><span style="font-size: 40px;color:green;">1억 2200만원</span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;">
+                                    <span style="font-size: 18px;">2월 비용 : </span>
+                                    <span style="font-size: 18px;color:green;">5200만원</span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;">
+                                    <span style="font-size: 18px;">3월 비용(01~21) : </span>
+                                    <span style="font-size: 18px;color:green;">3500만원</span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 25px;">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 장애 현황</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 센터 자립율(TBD)</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;"><h3>센터 자립율 </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        서비스 별 현황 <small>기준일: 17.03.21</small>
+                    </h1>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 아마존 서비스를 사용하는 스마트TV</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체가입자  </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">현재 사용자 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">3435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">연결 기기 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435대 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 128,170 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">기기당 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 17 </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Smart ThinQ</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체가입자  </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">현재 사용자 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">3435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">연결 기기 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435대 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 128,170 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">기기당 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 17 </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 아마존 서비스를 사용하는 스마트TV</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체가입자  </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">현재 사용자 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">3435명 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">연결 기기 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">13435대 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">전체 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 128,170 </span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <div class="col-lg-12" style="text-align: center;height: 10px;">
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="list-group">
+                                <div class="col-lg-6"><span style="font-size: 25px;">기기당 비용 </span>
+                                </div>
+                                <div class="col-lg-6"><span style="font-size: 25px;">$ 17 </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /#page-wrapper -->
+    <th:block>
+        <script>
+            /*<![CDATA[*/
+            $( document ).ready(function() {
+                var v_url = "/web/admin/dashboard/totalUser";
+                $("#totalUser").load(v_url,null, function() {
+                });
+            });
+            /*]]>*/
+        </script>
+    </th:block>
+
+</div>
+
+
+</body>
+</html>

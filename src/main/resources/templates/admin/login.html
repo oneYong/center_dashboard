@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Custom CSS -->
+    <link th:href="@{/static/css/login.css}" rel="stylesheet"/>
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.js}"></script>
+    <script th:src="@{/static/js/dashboard.js}"></script>
+</head>
+<body>
+<div class="login-page">
+    <div class="form">
+        <form id="LoginForm" class="login-form" method="post" th:action="@{loginProcess}">
+            <h1 class="page-header"> Center Dashboard </h1>
+            <input type="text" id="userId" name="userId" th:placeholder="username"/>
+            <input type="password" id="password" name="password" th:placeholder="password"/>
+            <button type="submit">login</button>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    /*<![CDATA[*/
+
+        $("#LoginForm").submit(function(e){
+            var v_url = "/web/admin/json/loginProcess";
+            var v_param = $("#LoginForm").serialize();
+            var v_action = "$(location).attr('href','/web/admin/dashboard');";
+
+            //console.log("v_param : "+v_param);
+            DoAction.init(v_url,v_param,v_action);
+            e.preventDefault();
+        });
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

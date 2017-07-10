@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.center.dashboard.mapper.DashBoardMapper">
+    <select id="getTotalCntByDate" parameterType="totalDataVO" resultType="totalDataVO" >
+        <![CDATA[
+            select sum(A.total_cnt) as totalCnt
+                FROM (
+                  SELECT sum(tcnt) AS total_cnt
+                  FROM sbc_ruc_total_user
+                  WHERE crt_date = #{date}
+                  UNION ALL
+                  SELECT sum(tcnt) AS total_cnt
+                  FROM sbc_kic_total_user
+                  WHERE crt_date = #{date}
+                  UNION ALL
+                  SELECT sum(tcnt) AS total_cnt
+                  FROM sbc_eic_total_user
+                  WHERE crt_date = #{date}
+                  UNION ALL
+                  SELECT sum(tcnt) AS total_cnt
+                  FROM sbc_aic_total_user
+                  WHERE crt_date = #{date}
+                ) A;
+
+        ]]>
+    </select>
+    <select id="getDefaultTotalCnt_KIC" parameterType="chartDataVO" resultType="chartDataVO" >
+        <![CDATA[
+            select crt_date as crtDate
+                  ,group_concat(cntry_code order by cntry_code) as cntryCode
+                  ,group_concat(cntry_name order by cntry_code) as cntryName
+                  ,group_concat(tcnt order by cntry_code) as tCnt
+              from sbc_kic_total_user
+             where crt_date >= DATE_FORMAT(now() - INTERVAL 7 DAY,'%Y%m%d')
+               and crt_date < DATE_FORMAT(now(),'%Y%m%d')
+          GROUP BY crt_date;
+
+        ]]>
+    </select>
+
+</mapper>

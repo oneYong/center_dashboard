@@ -1,0 +1,66 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.3.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.springframework:springloaded:1.2.4.RELEASE");
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'idea'
+
+idea {
+	module {
+		inheritOutputDirs = false
+		outputDir = file("$buildDir/classes/main/")
+	}
+}
+
+
+version = '1.0'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+bootRepackage {
+	mainClass = 'com.center.dashboard.CenterDashboardApplication'
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		url "https://repository.apache.org/content/repositories/snapshots"
+	}
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-aop')
+	compile('org.springframework.boot:spring-boot-starter-jdbc')
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+	compile("commons-dbcp:commons-dbcp:1.4")
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compileOnly('org.projectlombok:lombok')
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.1.1')
+	compile ('org.springframework.boot:spring-boot-configuration-processor')
+	runtime('com.h2database:h2')
+	runtime('mysql:mysql-connector-java')
+	compile group: 'org.lazyluke', name: 'log4jdbc-remix', version: '0.2.7'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile 'org.webjars:jquery:3.1.1'
+	compile 'org.webjars.npm:bootstrap:3.3.7'
+	compile group: 'org.webjars', name: 'datatables', version: '1.10.12'
+	compile group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: '1.4.3.RELEASE'
+}
+
+
+
+

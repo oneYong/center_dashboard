@@ -1,0 +1,402 @@
+body{
+  margin: 0;
+  padding: 0;
+  min-width: 1120px;
+}
+p {
+  font-size:		1em;
+  margin:			1ex 0;
+}
+p.buttons {
+  text-align:		center;
+  line-height:	2.5em;
+}
+button {
+  line-height:	normal;
+}
+.hidden {
+  display:		none;
+}
+
+/*
+ *	Rules for simulated drop-down/pop-up lists
+ */
+ul {
+  /* rules common to BOTH inner and outer UL */
+  z-index:	100000;
+  margin:		1ex 0;
+  padding:	0;
+  list-style:	none;
+  cursor:		pointer;
+  border:		1px solid Black;
+  /* rules for outer UL only */
+  width:		15ex;
+  position:	relative;
+}
+ul li {
+  background-color: #EEE;
+  padding: 0.15em 1em 0.3em 5px;
+}
+ul ul {
+  display:	none;
+  position:	absolute;
+  width:		100%;
+  left:		-1px;
+  /* Pop-Up */
+  bottom:		0;
+  margin:		0;
+  margin-bottom: 1.55em;
+}
+.ui-layout-north ul ul {
+  /* Drop-Down */
+  bottom:		auto;
+  margin:		0;
+  margin-top:	1.45em;
+}
+ul ul li		{ padding: 3px 1em 3px 5px; }
+ul ul li:hover	{ background-color: #FF9; }
+ul li:hover ul	{ display:	block; background-color: #EEE; }
+.ui-layout-center{
+  background: rgb(204, 204, 204);
+}
+
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+page[size="A4"] {
+  width: 21cm;
+  height: 29.7cm;
+}
+
+page[size="A4"][layout="portrait"] {
+  width: 29.7cm;
+  height: 21cm;
+}
+
+page[size="A3"] {
+  width: 29.7cm;
+  height: 42cm;
+}
+
+page[size="A3"][layout="portrait"] {
+  width: 42cm;
+  height: 29.7cm;
+}
+
+page[size="A5"] {
+  width: 14.8cm;
+  height: 21cm;
+}
+
+page[size="A5"][layout="portrait"] {
+  width: 21cm;
+  height: 14.8cm;
+}
+
+@media print {
+  body, page {
+    margin: 0;
+    box-shadow: 0;
+  }
+}
+
+page .contents {
+  width: 100%;
+  height: 100%;
+  background: whitesmoke;
+}
+page .contents .report-contents {
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-right: 30px;
+  padding-bottom: 50px;
+}
+.report-contents .row{
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+.report-contents .row-bottom{
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+.report-contents .row .th{
+  display: inline-block;
+  width: 19%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 0.9em;
+}
+.report-contents .row .td{
+  display: inline-block;
+  border-left: 1px solid black;
+  vertical-align: middle;
+  width: 79%;
+  padding: 3px;
+  padding-top: 4px;
+  font-size: 0.8em;
+  min-height: 18px;
+}
+.report-contents .row .td .img-item{
+  width: 280px;
+  height: 200px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  float: left;
+}
+.report-contents .row .tc{
+  display: inline-block;
+  vertical-align: middle;
+  width: 98%;
+  padding: 10px;
+}
+.report-contents .row .td pre{
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 10px;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+.report-contents .row .th-center{
+  border-left: 1px solid black;
+}
+.report-contents .row .td-top-left{
+  width: 500px;
+  padding-left: 30px;
+  display: inline-block;
+}
+.ui-layout-west label{
+  font-size: 12px;
+  color: #82929f;
+}
+.ui-layout-west .row .th{
+  background-image: url("../../static/img/ic/ic-group-report.png");
+  padding-left: 22px;;
+  background-repeat: no-repeat;
+  font-size: 0.9em;
+  margin-top: 5px;
+  display: inline-block;
+}
+.ui-layout-west .row .th.title      {  background-position: -4px -6px;  }
+.ui-layout-west .row .th.schoolName {  background-position: -4px -26px;  }
+.ui-layout-west .row .th.ownerGrade {  background-position: -4px -46px;  }
+.ui-layout-west .row .th.ownerClass {  background-position: -4px -46px;  }
+.ui-layout-west .row .th.ownerName  {  background-position: -4px -66px;  }
+.ui-layout-west .row .th.date       {  background-position: -4px -85px;  }
+.ui-layout-west .row .th.placeInfo  {  background-position: -4px -105px;  }
+.ui-layout-west .row .th.subject    {  background-position: -4px -125px;  }
+.ui-layout-west .row .th.purpose    {  background-position: -4px -144px;  }
+.ui-layout-west .row .th.companions {  background-position: -4px -164px;  }
+.ui-layout-west .row .th.contents   {  background-position: -4px -184px;  }
+.ui-layout-west .row .th.newFact    {  background-position: -4px -203px;  }
+.ui-layout-west .row .th.impression {  background-position: -4px -223px;  }
+.ui-layout-west .row .th.remember   {  background-position: -4px -243px;  }
+.ui-layout-west .row .th.nextDest   {  background-position: -4px -262px;  }
+.ui-layout-west .row .th.advice     {  background-position: -4px -282px;  }
+.ui-layout-west .row .th.relatedInfo{  background-position: -4px -302px;  }
+
+.ui-layout-west .row .te{
+  font-size: 0.8em;
+  color: #888888;
+}
+.ui-layout-west .row .td{
+
+}
+#functions{
+  margin-bottom: 5px;
+}
+#functions *{
+  vertical-align: middle;
+}
+h2{
+  text-align: center;
+}
+h3{
+  padding-top: 30px;
+  text-align: center;
+}
+form{
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+.ui-layout-west{
+  overflow: hidden;
+}
+.ui-layout-west .row{
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 5px ;
+  display: none;
+}
+.ui-layout-west .row .close{
+  text-align: right;
+  margin-bottom: -20px;
+  color: #aaaaaa;
+  cursor: pointer;
+}
+.ui-layout-west #report-inputs{
+ height: 1020px;
+  background-color: #efefef;
+  overflow: scroll;
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  overflow-x: hidden;
+}
+.ui-layout-west {
+  background: rgb(204, 204, 204);
+}
+
+.ui-layout-west #report-inputs input[type="text"]{
+  width: 95%;
+}
+.ui-layout-west #report-inputs input.calender{
+  width: 85px;
+}
+
+.ui-layout-west #report-inputs select{
+  width: 98%;
+  margin-bottom: 3px;
+}
+.ui-layout-west #report-inputs textarea{
+  resize: none;
+  width: 95%;
+  height: 100px;
+}
+.ui-layout-west #report-inputs input
+,.ui-layout-west #report-inputs select
+,.ui-layout-west #report-inputs textarea{
+  border: 1px solid #d5dbe0;
+  padding: 5px;
+  font-size: 0.9em;
+  border-radius: 2px;
+  color: #666666;
+}
+
+#header{
+  background-color: #373c5b;
+  height: 140px;
+  color: #ffffff;
+}
+#header h1{
+  margin: 0;
+  height: 60px;
+  padding: 10px;
+}
+#header h1 img{
+  vertical-align: middle;
+}
+#header h1 p{
+  vertical-align: bottom;
+  font-size: 0.6em;
+  margin: 0;
+  display: inline;
+  border-left: 1px solid #696d84;
+  margin-left: 10px;
+  padding-left: 20px;
+}
+#header select{
+  background-color: #4a4f6a;
+  height: 32px;
+  width: 350px;
+  border-style: none;
+  color: #ffffff;
+  font-size: 1em;
+  margin-left: 180px;
+}
+#header .welcome{
+  position: absolute;
+  right: 0;
+  top:0;
+  background-color: #272e59;
+  height: 60px;
+  margin: 0;
+  text-align: right;
+  line-height: 60px;
+  vertical-align: bottom;
+  padding-left: 20px;
+}
+#header .welcome img{
+  display: inline;
+  vertical-align: middle;
+}
+#header .welcome p{
+  margin-right: 20px;
+  display: inline;
+  vertical-align: middle;
+}
+#functions .line{
+  background-color: #696d84;
+  width: 1px;
+  height: 17px;
+  display: inline-block;
+}
+#functions button{
+  background: transparent;
+  border-style: none;
+  margin: 0;
+  padding: 0;
+}
+#functions .big{
+  position: absolute;
+  left: 30px;
+  top : 128px;
+  z-index: 1;
+}
+#frmUpadte button{
+  background: transparent;
+  border-style: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+#frmFile{
+  display: none;
+}
+#frmUpadte{
+  margin-top: 0px;
+  display: block;
+}
+#ui-datepicker-div{
+  z-index: 100 !important;
+}
+page .report-contents .row:last-child{
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+#report-top, #report-bottom{
+  border-style: none;
+}
+.photo-area .item{
+  width: 75px;
+  height: 75px;
+  background-color: #c4e3f3;
+  border-radius: 5px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  float: left;
+}
+.photo-area .item span{
+  display: block;
+  width: 97%;
+  height: 20px;
+  text-align: right;
+  cursor: pointer;
+}
+.photo-area .item img{
+  max-width: 75px;
+  max-height: 55px;
+}
+.clear{
+  clear: both;
+}

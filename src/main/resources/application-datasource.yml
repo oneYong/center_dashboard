@@ -1,0 +1,15 @@
+---
+DataSource:
+  driverClassName: net.sf.log4jdbc.DriverSpy
+  url: jdbc:log4jdbc:mysql://150.150.206.50:3306/sbc?zeroDateTimeBehavior=convertToNull
+  userName: root
+  password: Posgen201%
+  testOnBorrow: true
+  validationQuery: SELECT 1
+
+---
+Mybatis:
+  configPath: META-INF/mybatis/mybatis.xml
+
+
+

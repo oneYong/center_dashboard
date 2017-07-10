@@ -1,0 +1,34 @@
+---
+project:
+  base-resource-dir: classpath:/
+
+  ## Company PC
+  #base-resource-dir: file:///D:/Dev/center_dashboard/src/main/resources/
+### 스프링 encoding
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 100MB
+  thymeleaf:
+    prefix: ${project.base-resource-dir}templates/
+    ## 개발모드
+    cache: false
+  resources:
+    static-locations: ${project.base-resource-dir}static/
+    ## 개발모드
+    cache-period: 0
+
+### tomcat 서버 포트 & error 화면 안보이게 설정
+server:
+  port: 8077
+  error:
+    ## 개발모드 default : naver
+    include-stacktrace: always
+    whitelabel:
+      enabled: false
+  tomcat:
+    uri-encoding: UTF-8

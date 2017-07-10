@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<div layout:fragment="content">
+    <th:block>
+        <style>
+
+        </style>
+    </th:block>
+
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        사용자 전체 현황  <small>(최근 30일동안의 일별 증감 수 그래프로 표현)</small>
+                    </h1>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div id="totalUserByKIC"></div>
+            </div>
+            <!-- /.row -->
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        서비스 별 현황 <small>기준일: 2017.03.21</small>
+                    </h1>
+                </div>
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>서비스명</th>
+                                        <th>전체회원 수</th>
+                                        <th>신규가입자 수</th>
+                                        <th>실제 사용자 수</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>EMP</td>
+                                        <td>50</td>
+                                        <td>23</td>
+                                        <td>21</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Smart World</td>
+                                        <td>100</td>
+                                        <td>54</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>PC David</td>
+                                        <td>160</td>
+                                        <td>32</td>
+                                        <td>100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LG Health</td>
+                                        <td>80</td>
+                                        <td>9</td>
+                                        <td>70</td>
+                                    </tr>
+                                    <tr>
+                                        <td>LG Cloud</td>
+                                        <td>700</td>
+                                        <td>45</td>
+                                        <td>590</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SmartThinQ</td>
+                                        <td>60</td>
+                                        <td>1</td>
+                                        <td>59</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+    <th:block>
+        <script>
+            /*<![CDATA[*/
+            Chart.defaults.global.legend.display = false;
+            var chartView = false;
+            $( document ).ready(function() {
+                var v_url = "/web/admin/totalUserByRegion/totalUserByKIC";
+                $("#totalUserByKIC").load(v_url,null, function() {
+                });
+            });
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</div>
+
+
+</html>

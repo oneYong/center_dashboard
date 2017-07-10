@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+        xmlns         = "http://www.w3.org/1999/xhtml"
+        xmlns:th      = "http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8" />
+    <title>Center DashBoard</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/dist/css/bootstrap.min.css}" />
+
+    <!-- MetisMenu CSS -->
+    <link th:href="@{/static/vendor/metisMenu/metisMenu.min.css}" rel="stylesheet"/>
+
+    <!-- Custom CSS -->
+    <link th:href="@{/static/css/sb-admin-2.css}" rel="stylesheet"/>
+
+    <!-- Morris Charts CSS -->
+    <link th:href="@{/static/vendor/morrisjs/morris.css}" rel="stylesheet"/>
+    <!-- Custom Fonts -->
+    <link th:href="@{/static/vendor/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
+
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/dist/js/bootstrap.js}"></script>
+    <script th:src="@{/webjars/datatables/1.10.12/js/jquery.dataTables.js}"></script>
+    <script th:src="@{/webjars/datatables/1.10.12/js/dataTables.bootstrap.js}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script th:src="@{/static/vendor/metisMenu/metisMenu.min.js}"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script th:src="@{/static/vendor/raphael/raphael.min.js}"></script>
+    <script th:src="@{/static/vendor/morrisjs/morris.min.js}"></script>
+
+
+    <!-- Custom Theme JavaScript -->
+    <script th:src="@{/static/js/sb-admin-2.js}"></script>
+    <script th:src="@{/static/js/dashboard.js}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header th:replace="admin/fragments/header :: headerFragment"></header>
+
+    <div layout:fragment="content"></div>
+<!--
+    <footer th:replace="admin/fragments/footer:: footerFragment"></footer>
+
+-->
+
+</div>
+
+</body>
+</html>
