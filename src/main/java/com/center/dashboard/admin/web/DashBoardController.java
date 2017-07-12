@@ -4,6 +4,7 @@ import com.center.dashboard.admin.service.MakeChartService;
 import com.center.dashboard.mapper.DashBoardMapper;
 import com.center.dashboard.mapper.UserMapper;
 import com.center.dashboard.util.CmmDate;
+import com.center.dashboard.util.ERegion;
 import com.center.dashboard.util.Encryption;
 import com.center.dashboard.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,10 @@ public class DashBoardController {
 
     @RequestMapping(value="/totalUserByRegion/totalUserByKIC", method = RequestMethod.GET)
     public String totalUserByKIC(Model model) throws Exception{
+
+        makeChartService.run(ERegion.KIC, CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        model.addAttribute("kic_label",makeChartService.getChartLabels());
+        model.addAttribute("kic_datasets",makeChartService.getChartDatasets());
 
         return "admin/totalUserByRegion/totalUserByKIC";
     }

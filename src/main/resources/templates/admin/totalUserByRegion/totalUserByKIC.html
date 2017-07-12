@@ -6,7 +6,7 @@
             <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
         </div>
         <div class="panel-body" style="overflow: hidden;">
-            <canvas id="lineChart" height="305" width="500" ></canvas>
+            <canvas id="lineChart" height="205" width="500" ></canvas>
         </div>
     </div>
 </div>
@@ -22,14 +22,24 @@
     </div>
 </div>
     <th:block>
-        <script>
+        <script type="text/javascript" th:inline="javascript">
             /*<![CDATA[*/
+
+            // to array
+            var temp_label = [[${kic_label}]];
+            var v_label = new Array();
+            for(var i = 0; i < temp_label.split(",").length; i++){
+                v_label[i] = temp_label.split(",")[i];
+            }
+            // to object
+            var v_datasets = eval("("+[[${kic_datasets}]]+")");
+
+
             var myChart = new Chart(document.getElementById("lineChart"), {
                 type: 'line',
                 data: {
-                    labels: ['2017-06-29','2017-06-30','2017-07-01','2017-07-02','2017-07-03','2017-07-04','2017-07-05'],
-                    datasets: [{data:[2,2,2,2,2,2,2],label:"AJ7(AJ_Others)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[488609,488826,489115,489403,489634,489821,490013],label:"AU(Australia)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[6,6,6,6,6,6,6],label:"AU7(AU_Others)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[638,641,647,649,650,650,651],label:"BD(Bangladesh)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[16,16,16,16,16,16,16],label:"BN(Brunei Darussalam)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[11,11,11,11,11,11,11],label:"BT(Bhutan)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[647130,647162,647216,647297,647329,647362,647399],label:"CN(China)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[6,6,6,6,6,6,6],label:"FJ(Fiji)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[5,5,5,5,5,5,5],label:"GU(Guam)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[374333,374419,374515,374637,374744,374814,374906],label:"HK(Hong Kong)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[295430,295591,295739,295850,296007,296137,296275],label:"ID(Indonesia)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[585338,585582,585937,586352,586642,586915,587137],label:"IN(India)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[2,2,2,2,2,2,2],label:"IO(British Indian ocean territory)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[153447,153469,153516,153552,153571,153592,153612],label:"JP(Japan)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[459,461,463,469,475,478,483],label:"KH(Cambodia)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[79,79,79,79,79,79,79],label:"KP(Democratic PeopleKs Republic of Korea)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[1191820,1193011,1195482,1198415,1199882,1201237,1202731],label:"KR(Korea)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[9,9,9,9,10,10,10],label:"KR7(KR_Others)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[96,96,96,96,96,96,96],label:"LA(Lao PeopleKs Democratic Republic)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[433,436,442,444,445,452,454],label:"LK(Sri Lanka)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[1,1,1,1,1,1,1],label:"MH(Marshall Islands)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[443,445,448,449,455,456,461],label:"MM(Myanmar)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[164,168,169,170,171,173,174],label:"MN(Mongolia)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[13,13,13,13,13,13,13],label:"MO(Macao Special Administrative Region of China)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[2,2,2,2,2,2,2],label:"MP(Northern Mariana Islands)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[26,26,26,26,26,26,26],label:"MV(Maldives)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[69101,69129,69177,69220,69258,69280,69304],label:"MY(Malaysia)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[2,2,2,2,2,2,2],label:"NC(New Caledonia)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[155,156,156,156,157,158,158],label:"NP(Nepal)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[1,1,1,1,1,1,1],label:"NU(Niue)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[62216,62237,62272,62312,62328,62353,62366],label:"NZ(New Zealand)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[5,5,5,5,5,5,5],label:"PF(French Polynesia)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[1,1,1,1,1,1,1],label:"PG(Papua New Guinea)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[222825,222892,222994,223115,223184,223235,223338],label:"PH(Philippines)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[2,2,2,2,2,2,2],label:"PN(Pitcairn)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[3,3,3,3,3,3,3],label:"PW(Palau)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[134972,135018,135098,135159,135205,135238,135277],label:"SG(Singapore)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[253516,253601,253708,253808,253901,254019,254104],label:"TH(Thailand)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[1,1,1,1,1,1,1],label:"TO(Tonga)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false},{data:[2,2,2,2,2,2,2],label:"TV(Tuvalu)",borderColor:'#cc65fe',backgroundColor:'#cc65fe',fill:false},{data:[262500,262595,262720,262853,262948,263024,263136],label:"TW(Taiwan)",borderColor:'#ff6384',backgroundColor:'#ff6384',fill:false},{data:[395748,395857,395970,396109,396205,396309,1],label:"VN(Vietnam)",borderColor:'#36a2eb',backgroundColor:'#36a2eb',fill:false}
-                    ]
+                    labels: v_label,
+                    datasets: v_datasets
                 },
                 options: {
                     title: {
@@ -51,6 +61,16 @@
                                 displayFormats: {
                                     day: 'MM-DD'
                                 }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value;
+                                },
+                                // min : 0,
+                                beginAtZero: true   // minimum value will be 0.
                             }
                         }]
                     },
@@ -93,23 +113,21 @@
                 if(!chartView){
                     for(var i = 0; i < dataLength; i++){
                         if(i == index){
-                            ci.data.datasets[index].hidden = true;
-                            ci.update();
+                            ci.data.datasets[i].hidden = false;
+                            continue;
                         }
-                        ci.data.datasets[index].hidden = false;
-                        ci.update();
+                        ci.data.datasets[i].hidden = true;
                     }
 
                     chartView = true;
                 }else{
                     for(var i = 0; i < dataLength; i++){
-                        ci.data.datasets[index].hidden = true;
-                        ci.update();
+                        ci.data.datasets[i].hidden = false;
+
                     }
                     chartView = false;
                 }
-
-
+                ci.update();
 
                 // See controller.isDatasetVisible comment
                 // meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
@@ -118,6 +136,7 @@
                 //ci.update();
             };
             //test
+
             document.getElementById('js-legend').innerHTML = myChart.generateLegend();
 
             /*]]>*/

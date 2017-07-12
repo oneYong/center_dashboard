@@ -1,8 +1,7 @@
 package com.center.dashboard.mapper;
 
 import com.center.dashboard.util.CmmDate;
-import com.center.dashboard.vo.ChartDataVO;
-import com.center.dashboard.vo.TotalDataVO;
+import com.center.dashboard.vo.TotalUserVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +35,20 @@ public class DashBoardMapperTest {
     }
 
     @Test
-    public void test_getDefaultTotalCnt_KIC() throws Exception{
-        List<ChartDataVO> chartDataVOList = dashBoardMapper.getDefaultTotalCnt_KIC();
-        System.out.println(chartDataVOList);
+    public void test_getCrtDate_KIC() throws Exception{
+        List<String> crtDateList = dashBoardMapper.getCrtDate_KIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(crtDateList);
+    }
+
+    @Test
+    public void test_getCntryCode_KIC() throws Exception{
+        List<String> cntryCodeList = dashBoardMapper.getCntryCode_KIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(cntryCodeList);
+    }
+    @Test
+    public void test_getTotalUser_KIC() throws Exception{
+        List<TotalUserVO> totalUserList = dashBoardMapper.getTotalUser_KIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(totalUserList);
     }
 
 }

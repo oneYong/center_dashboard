@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.center.dashboard.mapper.DashBoardMapper">
-    <select id="getTotalCntByDate" parameterType="totalDataVO" resultType="totalDataVO" >
+    <select id="getTotalCntByDate" parameterType="String" resultType="totalDataVO" >
         <![CDATA[
             select sum(A.total_cnt) as totalCnt
                 FROM (
@@ -27,15 +27,37 @@
 
         ]]>
     </select>
-    <select id="getDefaultTotalCnt_KIC" parameterType="chartDataVO" resultType="chartDataVO" >
+    <select id="getTotalUser_KIC" parameterType="String" resultType="totalUserVO" >
         <![CDATA[
             select crt_date as crtDate
-                  ,group_concat(cntry_code order by cntry_code) as cntryCode
-                  ,group_concat(cntry_name order by cntry_code) as cntryName
-                  ,group_concat(tcnt order by cntry_code) as tCnt
+                  ,cntry_code as cntryCode
+                  ,cntry_name as cntryName
+                  ,tcnt as tCnt
               from sbc_kic_total_user
-             where crt_date >= DATE_FORMAT(now() - INTERVAL 7 DAY,'%Y%m%d')
-               and crt_date < DATE_FORMAT(now(),'%Y%m%d')
+             where crt_date >= #{startDate}
+               and crt_date < #{endDate}
+          order by crtDate;
+
+        ]]>
+    </select>
+
+    <select id="getCntryCode_KIC" parameterType="String" resultType="String" >
+        <![CDATA[
+            select cntry_code as cntryCode
+              from sbc_kic_total_user
+             where crt_date >= #{startDate}
+               and crt_date < #{endDate}
+          GROUP BY cntry_code order by tcnt desc;
+
+        ]]>
+    </select>
+
+    <select id="getCrtDate_KIC" parameterType="String" resultType="String" >
+        <![CDATA[
+            select crt_date as crtDate
+              from sbc_kic_total_user
+             where crt_date >= #{startDate}
+               and crt_date < #{endDate}
           GROUP BY crt_date;
 
         ]]>

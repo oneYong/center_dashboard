@@ -19,6 +19,6 @@
 		<typeAlias alias="list" type="java.util.List" />
 		<typeAlias alias="userVO" type="com.center.dashboard.vo.UserVO" />
 		<typeAlias alias="totalDataVO" type="com.center.dashboard.vo.TotalDataVO" />
-		<typeAlias alias="chartDataVO" type="com.center.dashboard.vo.ChartDataVO" />
+		<typeAlias alias="totalUserVO" type="com.center.dashboard.vo.TotalUserVO" />
 	</typeAliases>
 </configuration>

@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by WYKIM on 2017-06-20.
  */
 @Data
-public class ChartDataVO {
+public class TotalUserVO {
     private String crtDate;
     private String cntryCode;
     private String cntryName;

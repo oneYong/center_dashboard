@@ -1,8 +1,9 @@
 package com.center.dashboard.admin.service;
 
 import com.center.dashboard.mapper.DashBoardMapper;
+import com.center.dashboard.util.CmmDate;
 import com.center.dashboard.util.ERegion;
-import com.center.dashboard.vo.ChartDataVO;
+import com.center.dashboard.vo.TotalUserVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,26 +29,13 @@ public class MakeChartServiceTest {
 
     @Test
     public void test_getDate() throws Exception{
-        System.out.println(makeChartService.getDate("20170611"));
+        //System.out.println(makeChartService.getDate("20170611"));
     }
 
-    @Test
-    public void test_makeLabels() throws Exception{
-        List<ChartDataVO> chartDataVOList = dashBoardMapper.getDefaultTotalCnt_KIC();
-        makeChartService.makeLabels(chartDataVOList);
-        System.out.println(makeChartService.getLabels());
-    }
-
-    @Test
-    public void test_makeCntryValue() throws Exception{
-        List<ChartDataVO> chartDataVOList = dashBoardMapper.getDefaultTotalCnt_KIC();
-        makeChartService.makeCntryValue(chartDataVOList);
-        System.out.println(makeChartService.getCntryValue());
-    }
 
     @Test
     public void test_run() throws Exception{
-        makeChartService.run(ERegion.KIC);
+        makeChartService.run(ERegion.KIC, CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
         System.out.println(makeChartService.getChartLabels());
         System.out.println(makeChartService.getChartDatasets());
     }

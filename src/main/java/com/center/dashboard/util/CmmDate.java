@@ -30,4 +30,14 @@ public class CmmDate {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatter.format(cal.getTime());
     }
+
+    public static String getAWeeksAgoGMTDate(){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyyMMdd");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return formatter.format(cal.getTime());
+    }
+
+
 }
