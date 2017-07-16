@@ -35,8 +35,6 @@ public class MakeChartServiceTest {
 
     @Test
     public void test_run() throws Exception{
-        makeChartService.run(ERegion.KIC, CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
-        System.out.println(makeChartService.getChartLabels());
-        System.out.println(makeChartService.getChartDatasets());
+
     }
 }

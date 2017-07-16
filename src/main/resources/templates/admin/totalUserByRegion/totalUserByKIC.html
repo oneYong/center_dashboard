@@ -3,20 +3,20 @@
 <div class="col-lg-8">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Tasks Panel</h3>
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC 전체 사용자 그래프</h3>
         </div>
         <div class="panel-body" style="overflow: hidden;">
-            <canvas id="lineChart" height="205" width="500" ></canvas>
+            <canvas id="kic-lineChart" height="230" width="500" ></canvas>
         </div>
     </div>
 </div>
 <div class="col-lg-4">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i>Updated on 2017-03-21</h3>
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC 전체 사용자 리스트</h3>
         </div>
         <div class="panel-body">
-            <div id="js-legend" class="chart-legend"></div>
+            <div id="kic-js-legend" class="chart-legend"></div>
 
         </div>
     </div>
@@ -26,25 +26,32 @@
             /*<![CDATA[*/
 
             // to array
-            var temp_label = [[${kic_label}]];
-            var v_label = new Array();
-            for(var i = 0; i < temp_label.split(",").length; i++){
-                v_label[i] = temp_label.split(",")[i];
+            var kic_temp_label = [[${kicLabel}]];
+            var kic_label = new Array();
+            for(var i = 0; i < kic_temp_label.split(",").length; i++){
+                kic_label[i] = kic_temp_label.split(",")[i];
             }
             // to object
-            var v_datasets = eval("("+[[${kic_datasets}]]+")");
+            var kic_datasets = eval("("+[[${kicDatasets}]]+")");
 
+            var kic_chart_view = false;
 
-            var myChart = new Chart(document.getElementById("lineChart"), {
+            // event
+            var kic_more_btn = '<button id="kic_more_btn" onclick="kic_full_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var kic_full_more_btn = '<button id="kic_full_more_btn" onclick="kic_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var kic_legend_html = [];
+            var kic_full_legend_html = [];
+
+            var kic_chart = new Chart(document.getElementById("kic-lineChart"), {
                 type: 'line',
                 data: {
-                    labels: v_label,
-                    datasets: v_datasets
+                    labels: kic_label,
+                    datasets: kic_datasets
                 },
                 options: {
                     title: {
                         display: true,
-                        text: 'World population per region (in millions)'
+                        text: 'KIC - 전체 회원수'
                     },
                     legend: {
                         onClick: function(event, legendItem) {alert();}
@@ -76,27 +83,48 @@
                     },
                     legendCallback: function(chart) {
                         console.log(chart);
-                        var legendHtml = [];
-                        legendHtml.push('<table class="table table-bordered table-hover table-striped">');
-                        legendHtml.push('<thead> <tr><th>lable name</th><th>Current 회원수</th></tr></thead>');
-                        legendHtml.push('<tbody>');
+                        kic_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        kic_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        kic_legend_html.push('<tbody>');
+
+                        kic_full_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        kic_full_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        kic_full_legend_html.push('<tbody>');
 
                         for (var i=0; i<chart.data.datasets.length; i++) {
                             var dataList = chart.data.datasets[i].data+"";
                             var lastData = dataList.split(",")[dataList.split(",").length-1];
-
-                            legendHtml.push('<tr>');
-                            legendHtml.push('<td class="chart-legend-label-text" onclick="updateDataset(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                            // full
+                            kic_full_legend_html.push('<tr>');
+                            kic_full_legend_html.push('<td>' + (i+1) +'</td>');
+                            kic_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetKIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                 + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                 + chart.data.datasets[i].label +'</td>');
-                            legendHtml.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            kic_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            kic_full_legend_html.push('</tr>');
 
-                            legendHtml.push('</tr>');
+                            // limit
+                            if(i < 10){
+                                kic_legend_html.push('<tr>');
+                                kic_legend_html.push('<td>' + (i+1) +'</td>');
+                                kic_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetKIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                                    + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
+                                    + chart.data.datasets[i].label +'</td>');
+                                kic_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                kic_legend_html.push('</tr>');
+                            }
+
                         }
 
-                        legendHtml.push('</tbody>');
-                        legendHtml.push('</table>');
-                        return legendHtml.join("");
+                        kic_legend_html.push('</tbody>');
+                        kic_legend_html.push('</table>');
+                        kic_legend_html.push(kic_more_btn);
+
+                        kic_full_legend_html.push('</tbody>');
+                        kic_full_legend_html.push('</table>');
+                        kic_full_legend_html.push(kic_full_more_btn);
+
+                        return kic_legend_html.join("");
                     },
                     legend: {
                         display: false
@@ -104,13 +132,13 @@
 
                 }
             });
-            updateDataset = function(e, datasetIndex) {
+            updateDatasetKIC = function(e, datasetIndex) {
                 var index = datasetIndex;
-                var ci = e.view.myChart;
+                var ci = e.view.kic_chart;
                 var meta = ci.getDatasetMeta(index);
                 var dataLength = ci.data.datasets.length;
 
-                if(!chartView){
+                if(!kic_chart_view){
                     for(var i = 0; i < dataLength; i++){
                         if(i == index){
                             ci.data.datasets[i].hidden = false;
@@ -119,25 +147,27 @@
                         ci.data.datasets[i].hidden = true;
                     }
 
-                    chartView = true;
+                    kic_chart_view = true;
                 }else{
                     for(var i = 0; i < dataLength; i++){
                         ci.data.datasets[i].hidden = false;
 
                     }
-                    chartView = false;
+                    kic_chart_view = false;
                 }
                 ci.update();
 
-                // See controller.isDatasetVisible comment
-                // meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
-
-                // We hid a dataset ... rerender the chart
-                //ci.update();
             };
-            //test
 
-            document.getElementById('js-legend').innerHTML = myChart.generateLegend();
+            document.getElementById('kic-js-legend').innerHTML = kic_chart.generateLegend();
+
+            function kic_more_view(){ // 줄이기
+                document.getElementById('kic-js-legend').innerHTML = kic_legend_html.join("");
+            }
+
+            function kic_full_more_view(){ // 더보기
+                document.getElementById('kic-js-legend').innerHTML = kic_full_legend_html.join("");
+            }
 
             /*]]>*/
         </script>

@@ -1,0 +1,177 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-8">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC 전체 사용자 그래프</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <canvas id="ruc-lineChart" height="230" width="500" ></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC 전체 사용자 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="ruc-js-legend" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to array
+            var ruc_temp_label = [[${rucLabel}]];
+            var ruc_label = new Array();
+            for(var i = 0; i < ruc_temp_label.split(",").length; i++){
+                ruc_label[i] = ruc_temp_label.split(",")[i];
+            }
+
+            // to object
+            var ruc_datasets = eval("("+[[${rucDatasets}]]+")");
+
+            var ruc_chart_view = false;
+
+            // event
+            var ruc_more_btn = '<button id="ruc_more_btn" onclick="ruc_full_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var ruc_full_more_btn = '<button id="ruc_full_more_btn" onclick="ruc_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var ruc_legend_html = [];
+            var ruc_full_legend_html = [];
+
+            var ruc_chart = new Chart(document.getElementById("ruc-lineChart"), {
+                type: 'line',
+                data: {
+                    labels: ruc_label,
+                    datasets: ruc_datasets
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'RUC - 전체 회원수'
+                    },
+                    legend: {
+                        onClick: function(event, legendItem) {alert();}
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: "time",
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 7 },
+                            time: {
+                                unit: 'day',
+                                round: 'day',
+                                displayFormats: {
+                                    day: 'MM-DD'
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value;
+                                },
+                                // min : 0,
+                                beginAtZero: true   // minimum value will be 0.
+                            }
+                        }]
+                    },
+                    legendCallback: function(chart) {
+                        console.log(chart);
+                        ruc_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        ruc_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        ruc_legend_html.push('<tbody>');
+
+                        ruc_full_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        ruc_full_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        ruc_full_legend_html.push('<tbody>');
+
+                        for (var i=0; i<chart.data.datasets.length; i++) {
+                            var dataList = chart.data.datasets[i].data+"";
+                            var lastData = dataList.split(",")[dataList.split(",").length-1];
+                            // full
+                            ruc_full_legend_html.push('<tr>');
+                            ruc_full_legend_html.push('<td>' + (i+1) +'</td>');
+                            ruc_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDataseRUC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                                + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
+                                + chart.data.datasets[i].label +'</td>');
+                            ruc_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            ruc_full_legend_html.push('</tr>');
+
+                            // limit
+                            if(i < 10){
+                                ruc_legend_html.push('<tr>');
+                                ruc_legend_html.push('<td>' + (i+1) +'</td>');
+                                ruc_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetRUC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                                    + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
+                                    + chart.data.datasets[i].label +'</td>');
+                                ruc_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                ruc_legend_html.push('</tr>');
+                            }
+
+                        }
+
+                        ruc_legend_html.push('</tbody>');
+                        ruc_legend_html.push('</table>');
+                        //ruc_legend_html.push(ruc_more_btn);
+
+                        ruc_full_legend_html.push('</tbody>');
+                        ruc_full_legend_html.push('</table>');
+                        ruc_full_legend_html.push(ruc_full_more_btn);
+
+                        return ruc_legend_html.join("");
+                    },
+                    legend: {
+                        display: false
+                    }
+
+                }
+            });
+            updateDatasetRUC = function(e, datasetIndex) {
+                var index = datasetIndex;
+                var ci = e.view.ruc_chart;
+                var meta = ci.getDatasetMeta(index);
+                var dataLength = ci.data.datasets.length;
+
+                if(!ruc_chart_view){
+                    for(var i = 0; i < dataLength; i++){
+                        if(i == index){
+                            ci.data.datasets[i].hidden = false;
+                            continue;
+                        }
+                        ci.data.datasets[i].hidden = true;
+                    }
+
+                    ruc_chart_view = true;
+                }else{
+                    for(var i = 0; i < dataLength; i++){
+                        ci.data.datasets[i].hidden = false;
+
+                    }
+                    ruc_chart_view = false;
+                }
+                ci.update();
+
+            };
+
+            document.getElementById('ruc-js-legend').innerHTML = ruc_chart.generateLegend();
+
+            function ruc_more_view(){ // 줄이기
+                document.getElementById('ruc-js-legend').innerHTML = ruc_legend_html.join("");
+            }
+
+            function ruc_full_more_view(){ // 더보기
+                document.getElementById('ruc-js-legend').innerHTML = ruc_full_legend_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

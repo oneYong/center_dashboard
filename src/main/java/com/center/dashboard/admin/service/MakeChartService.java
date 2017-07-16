@@ -5,6 +5,7 @@ import com.center.dashboard.mapper.DashBoardMapper;
 import com.center.dashboard.util.CmmDate;
 import com.center.dashboard.util.ERegion;
 import com.center.dashboard.vo.TotalUserVO;
+import groovy.transform.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,66 +17,11 @@ import java.util.*;
 @Service
 public class MakeChartService {
 
-    private List<String> dateList;
-    private List<String> cntryCodeList;
-    private List<TotalUserVO> totalUserList;
-
-    private String startDate;
-    private String endDate;
-
-    private String chartLabels;
-    private String chartDatasets;
-
-    private String[] colorList = {"'#ff6384'","'#36a2eb'","'#cc65fe'","'#36a2eb'","'#cc65fe'"
-                                 ,"'#CCFF00'","'#CCFFCC'","'#FFFF99'","'#CCCC00'","'#CCCCCC'"
-
-                                ,"'#FFCC99'","'#CC9900'","'#CC99CC'","'#FF9999'","'#CC6600'"
-                                ,"'#CC66CC'","'#FF6699'","'#CC3300'","'#CC33CC'","'#FF3399'"
-
-                                ,"'#CC0000'","'#666600'","'#6666FF'","'#996666'","'#669933'"
-                                ,"'#6699CC'","'#6699FF'","'#9999FF'","'#9999CC'","'#66CC00'"
-
-                                ,"'#66CCCC'","'#66CCFF'","'#99CC99'","'#00CCCC'","'#33CCFF'"
-                                ,"'#000033'","'#000066'","'#000099'","'#330066'","'#EC7063'"
-
-                                ,"'#C39BD3'","'#9B59B6'","'#85C1E9'","'#2874A6'","'#76D7C4'"
-                                ,"'#148F77'","'#7DCEA0'","'#1E8449'","'#F7DC6F'","'#B7950B'"
-                                ,"''","''","''","''","''"
-    };
-
-    @Autowired
-    private DashBoardMapper dashBoardMapper;
-
-    public String getChartLabels(){
-        return this.chartLabels;
-    }
-    public String getChartDatasets(){
-        return this.chartDatasets;
-    }
-
-
     public String getDateAddComma(String date){
         return "'"+ date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6)+"'";
     }
 
-    public void initStartEndDate(String startDate, String endDate){
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public void initData(ERegion eRegion) throws Exception {
-        switch (eRegion){
-            case KIC:
-                        dateList = dashBoardMapper.getCrtDate_KIC(startDate, endDate);
-                        cntryCodeList = dashBoardMapper.getCntryCode_KIC(CmmDate.getYesterdayGMTDate(), endDate);
-                        totalUserList = dashBoardMapper.getTotalUser_KIC(startDate,endDate);
-            case AIC:
-            case EIC:
-            case RUC:
-        }
-    }
-
-    public void makeChartLabels(){
+    public String makeChartLabels(List<String> dateList){
         int size = dateList.size();
         String tempLabels = "";
         for(int i = 0; i < size; i++){
@@ -86,13 +32,11 @@ public class MakeChartService {
                 tempLabels += "," + getDateAddComma(date);
             }
         }
-        this.chartLabels = tempLabels;
+        return tempLabels;
     }
 
-
-
-
-    public void makeChartDatasets(){
+    public String makeChartDatasets(List<String> dateList, List<String> cntryCodeList,
+                                  List<TotalUserVO> totalUserList, String[] colorList){
 
         String datasetTemplate = "{data:[%s],label:\'%s\',borderColor:%s,backgroundColor:%s,fill:false}";
         String tempDataSetTemplate = "[";
@@ -105,7 +49,7 @@ public class MakeChartService {
             String cntryName = "";
 
             String tempData = "";
-            int colorIndex = i % 50;
+            int colorIndex = i % colorList.length;
 
             // start data set ...
             for(int j = 0; j < dateList.size(); j++){
@@ -152,23 +96,8 @@ public class MakeChartService {
         }
 
         tempDataSetTemplate += "]";
-        this.chartDatasets = tempDataSetTemplate;
+        return tempDataSetTemplate;
 
     }
 
-    public void run(ERegion eRegion, String startDate, String endDate) throws Exception{
-        switch (eRegion){
-            case KIC:
-                // 1. init
-                initStartEndDate(startDate,endDate);
-                initData(eRegion);
-
-                // 2. chart
-                makeChartLabels();
-                makeChartDatasets();
-            case AIC:
-            case EIC:
-            case RUC:
-        }
-    }
 }

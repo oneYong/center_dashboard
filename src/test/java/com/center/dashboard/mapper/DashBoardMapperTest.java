@@ -51,4 +51,21 @@ public class DashBoardMapperTest {
         System.out.println(totalUserList);
     }
 
+    @Test
+    public void test_getCrtDate_AIC() throws Exception{
+        List<String> crtDateList = dashBoardMapper.getCrtDate_AIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(crtDateList);
+    }
+
+    @Test
+    public void test_getCntryCode_AIC() throws Exception{
+        List<String> cntryCodeList = dashBoardMapper.getCntryCode_AIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(cntryCodeList);
+    }
+    @Test
+    public void test_getTotalUser_AIC() throws Exception{
+        List<TotalUserVO> totalUserList = dashBoardMapper.getTotalUser_AIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
+        System.out.println(totalUserList);
+    }
+
 }

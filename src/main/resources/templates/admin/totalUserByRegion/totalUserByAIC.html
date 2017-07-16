@@ -1,0 +1,177 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-8">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AIC 전체 사용자 그래프</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <canvas id="aic-lineChart" height="230" width="500" ></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AIC 전체 사용자 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="aic-js-legend" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to array
+            var aic_temp_label = [[${aicLabel}]];
+            var aic_label = new Array();
+            for(var i = 0; i < aic_temp_label.split(",").length; i++){
+                aic_label[i] = aic_temp_label.split(",")[i];
+            }
+
+            // to object
+            var aic_datasets = eval("("+[[${aicDatasets}]]+")");
+
+            var aic_chart_view = false;
+
+            // event
+            var aic_more_btn = '<button id="aic_more_btn" onclick="aic_full_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var aic_full_more_btn = '<button id="aic_full_more_btn" onclick="aic_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var aic_legend_html = [];
+            var aic_full_legend_html = [];
+
+            var aic_chart = new Chart(document.getElementById("aic-lineChart"), {
+                type: 'line',
+                data: {
+                    labels: aic_label,
+                    datasets: aic_datasets
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'AIC - 전체 회원수'
+                    },
+                    legend: {
+                        onClick: function(event, legendItem) {alert();}
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: "time",
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 7 },
+                            time: {
+                                unit: 'day',
+                                round: 'day',
+                                displayFormats: {
+                                    day: 'MM-DD'
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value;
+                                },
+                                // min : 0,
+                                beginAtZero: true   // minimum value will be 0.
+                            }
+                        }]
+                    },
+                    legendCallback: function(chart) {
+                        console.log(chart);
+                        aic_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        aic_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        aic_legend_html.push('<tbody>');
+
+                        aic_full_legend_html.push('<table class="table table-bordered table-hover table-striped">');
+                        aic_full_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        aic_full_legend_html.push('<tbody>');
+
+                        for (var i=0; i<chart.data.datasets.length; i++) {
+                            var dataList = chart.data.datasets[i].data+"";
+                            var lastData = dataList.split(",")[dataList.split(",").length-1];
+                            // full
+                            aic_full_legend_html.push('<tr>');
+                            aic_full_legend_html.push('<td>' + (i+1) +'</td>');
+                            aic_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetAIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                                + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
+                                + chart.data.datasets[i].label +'</td>');
+                            aic_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            aic_full_legend_html.push('</tr>');
+
+                            // limit
+                            if(i < 10){
+                                aic_legend_html.push('<tr>');
+                                aic_legend_html.push('<td>' + (i+1) +'</td>');
+                                aic_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetAIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
+                                    + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
+                                    + chart.data.datasets[i].label +'</td>');
+                                aic_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                aic_legend_html.push('</tr>');
+                            }
+
+                        }
+
+                        aic_legend_html.push('</tbody>');
+                        aic_legend_html.push('</table>');
+                        aic_legend_html.push(aic_more_btn);
+
+                        aic_full_legend_html.push('</tbody>');
+                        aic_full_legend_html.push('</table>');
+                        aic_full_legend_html.push(aic_full_more_btn);
+
+                        return aic_legend_html.join("");
+                    },
+                    legend: {
+                        display: false
+                    }
+
+                }
+            });
+            updateDatasetAIC = function(e, datasetIndex) {
+                var index = datasetIndex;
+                var ci = e.view.aic_chart;
+                var meta = ci.getDatasetMeta(index);
+                var dataLength = ci.data.datasets.length;
+
+                if(!aic_chart_view){
+                    for(var i = 0; i < dataLength; i++){
+                        if(i == index){
+                            ci.data.datasets[i].hidden = false;
+                            continue;
+                        }
+                        ci.data.datasets[i].hidden = true;
+                    }
+
+                    aic_chart_view = true;
+                }else{
+                    for(var i = 0; i < dataLength; i++){
+                        ci.data.datasets[i].hidden = false;
+
+                    }
+                    aic_chart_view = false;
+                }
+                ci.update();
+
+            };
+
+            document.getElementById('aic-js-legend').innerHTML = aic_chart.generateLegend();
+
+            function aic_more_view(){ // 줄이기
+                document.getElementById('aic-js-legend').innerHTML = aic_legend_html.join("");
+            }
+
+            function aic_full_more_view(){ // 더보기
+                document.getElementById('aic-js-legend').innerHTML = aic_full_legend_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

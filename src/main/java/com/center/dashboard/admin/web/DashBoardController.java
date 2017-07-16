@@ -1,6 +1,6 @@
 package com.center.dashboard.admin.web;
 
-import com.center.dashboard.admin.service.MakeChartService;
+import com.center.dashboard.admin.service.*;
 import com.center.dashboard.mapper.DashBoardMapper;
 import com.center.dashboard.mapper.UserMapper;
 import com.center.dashboard.util.CmmDate;
@@ -32,7 +32,16 @@ public class DashBoardController {
     private DashBoardMapper dashBoardMapper;
 
     @Autowired
-    private MakeChartService makeChartService;
+    private KICService kicService;
+
+    @Autowired
+    private AICService aicService;
+
+    @Autowired
+    private EICService eicService;
+
+    @Autowired
+    private RUCService rucService;
 
     private final double LIMIT_USER = 10000.0;
 
@@ -58,9 +67,12 @@ public class DashBoardController {
     }
 
     @RequestMapping(value="/totalUserByRegion", method = RequestMethod.GET)
-    public String totalUserByRegion(HttpSession session, HttpServletRequest request){
+    public String totalUserByRegion(Model model, HttpSession session, HttpServletRequest request){
         String user_id = (String) request.getSession().getAttribute("user_id");
-
+        String defaultStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String defaultEndDate = CmmDate.getYesterdayGMTDate();
+        model.addAttribute("startDate",defaultStartDate);
+        model.addAttribute("endDate",defaultEndDate);
         if(user_id != null){
             return "admin/totalUserByRegion";
         }else{
@@ -69,12 +81,82 @@ public class DashBoardController {
     }
 
     @RequestMapping(value="/totalUserByRegion/totalUserByKIC", method = RequestMethod.GET)
-    public String totalUserByKIC(Model model) throws Exception{
+    public String totalUserByKIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
 
-        makeChartService.run(ERegion.KIC, CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
-        model.addAttribute("kic_label",makeChartService.getChartLabels());
-        model.addAttribute("kic_datasets",makeChartService.getChartDatasets());
+        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String pEndDate = CmmDate.getYesterdayGMTDate();
+
+        if(!startDate.equals("") && startDate != null){
+            pStartDate = startDate;
+        }
+        if(!endDate.equals("") && endDate != null){
+            pEndDate = endDate;
+        }
+
+        kicService.run(pStartDate, pEndDate);
+        model.addAttribute("kicLabel",kicService.getChartLabels());
+        model.addAttribute("kicDatasets",kicService.getChartDatasets());
 
         return "admin/totalUserByRegion/totalUserByKIC";
+    }
+
+    @RequestMapping(value="/totalUserByRegion/totalUserByAIC", method = RequestMethod.GET)
+    public String totalUserByAIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
+
+        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String pEndDate = CmmDate.getYesterdayGMTDate();
+
+        if(!startDate.equals("") && startDate != null){
+            pStartDate = startDate;
+        }
+        if(!endDate.equals("") && endDate != null){
+            pEndDate = endDate;
+        }
+
+        aicService.run( pStartDate, pEndDate);
+        model.addAttribute("aicLabel",aicService.getChartLabels());
+        model.addAttribute("aicDatasets",aicService.getChartDatasets());
+
+        return "admin/totalUserByRegion/totalUserByAIC";
+    }
+
+    @RequestMapping(value="/totalUserByRegion/totalUserByEIC", method = RequestMethod.GET)
+    public String totalUserByEIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
+
+        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String pEndDate = CmmDate.getYesterdayGMTDate();
+
+        if(!startDate.equals("") && startDate != null){
+            pStartDate = startDate;
+        }
+        if(!endDate.equals("") && endDate != null){
+            pEndDate = endDate;
+        }
+
+        eicService.run( pStartDate, pEndDate);
+        model.addAttribute("eicLabel",eicService.getChartLabels());
+        model.addAttribute("eicDatasets",eicService.getChartDatasets());
+
+        return "admin/totalUserByRegion/totalUserByEIC";
+    }
+
+    @RequestMapping(value="/totalUserByRegion/totalUserByRUC", method = RequestMethod.GET)
+    public String totalUserByRUC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
+
+        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String pEndDate = CmmDate.getYesterdayGMTDate();
+
+        if(!startDate.equals("") && startDate != null){
+            pStartDate = startDate;
+        }
+        if(!endDate.equals("") && endDate != null){
+            pEndDate = endDate;
+        }
+
+        rucService.run( pStartDate, pEndDate);
+        model.addAttribute("rucLabel",rucService.getChartLabels());
+        model.addAttribute("rucDatasets",rucService.getChartDatasets());
+
+        return "admin/totalUserByRegion/totalUserByRUC";
     }
 }

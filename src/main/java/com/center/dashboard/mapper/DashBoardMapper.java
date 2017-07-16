@@ -16,4 +16,16 @@ public interface DashBoardMapper {
     List<String> getCrtDate_KIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
     List<String> getCntryCode_KIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
     List<TotalUserVO> getTotalUser_KIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+
+    List<String> getCrtDate_AIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<String> getCntryCode_AIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<TotalUserVO> getTotalUser_AIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+
+    List<String> getCrtDate_EIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<String> getCntryCode_EIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<TotalUserVO> getTotalUser_EIC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+
+    List<String> getCrtDate_RUC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<String> getCntryCode_RUC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
+    List<TotalUserVO> getTotalUser_RUC(@Param("startDate") String startDate,@Param("endDate") String endDate ) throws Exception;
 }
