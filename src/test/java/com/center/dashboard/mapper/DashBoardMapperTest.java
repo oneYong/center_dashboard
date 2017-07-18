@@ -68,4 +68,18 @@ public class DashBoardMapperTest {
         System.out.println(totalUserList);
     }
 
+    @Test
+    public void test_getServiceList() throws Exception{
+        List<TotalUserVO> serviceList_kic = dashBoardMapper.getServiceList_KIC(CmmDate.getYesterdayGMTDate());
+        List<TotalUserVO> serviceList_aic = dashBoardMapper.getServiceList_AIC(CmmDate.getYesterdayGMTDate());
+        List<TotalUserVO> serviceList_eic = dashBoardMapper.getServiceList_EIC(CmmDate.getYesterdayGMTDate());
+        List<TotalUserVO> serviceList_ruc = dashBoardMapper.getServiceList_RUC(CmmDate.getYesterdayGMTDate());
+
+
+        System.out.println(serviceList_kic);
+        System.out.println(serviceList_aic);
+        System.out.println(serviceList_eic);
+        System.out.println(serviceList_ruc);
+    }
+
 }

@@ -51,16 +51,10 @@ public class AICService {
         return this.chartDatasets;
     }
 
-
-    public String getDateAddComma(String date){
-        return "'"+ date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6)+"'";
-    }
-
     public void initStartEndDate(String startDate, String endDate){
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
 
 
     public void run(String startDate, String endDate) throws Exception{

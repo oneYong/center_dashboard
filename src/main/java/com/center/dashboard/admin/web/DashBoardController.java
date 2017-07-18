@@ -94,8 +94,10 @@ public class DashBoardController {
         }
 
         kicService.run(pStartDate, pEndDate);
+
         model.addAttribute("kicLabel",kicService.getChartLabels());
         model.addAttribute("kicDatasets",kicService.getChartDatasets());
+        model.addAttribute("kicServiceList",kicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
 
         return "admin/totalUserByRegion/totalUserByKIC";
     }

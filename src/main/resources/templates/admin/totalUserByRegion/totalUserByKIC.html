@@ -1,22 +1,33 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div class="col-lg-8">
+<div class="col-lg-6">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC 전체 사용자 그래프</h3>
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC 그래프</h3>
         </div>
         <div class="panel-body" style="overflow: hidden;">
-            <canvas id="kic-lineChart" height="230" width="500" ></canvas>
+            <canvas id="kic-lineChart" height="310" width="500" ></canvas>
         </div>
     </div>
 </div>
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC 전체 사용자 리스트</h3>
         </div>
         <div class="panel-body">
             <div id="kic-js-legend" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> KIC Service 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="kic-service-list"></div>
 
         </div>
     </div>
@@ -33,6 +44,7 @@
             }
             // to object
             var kic_datasets = eval("("+[[${kicDatasets}]]+")");
+            var kic_service_list = JSON.parse([[${kicServiceList}]]);
 
             var kic_chart_view = false;
 
@@ -41,6 +53,14 @@
             var kic_full_more_btn = '<button id="kic_full_more_btn" onclick="kic_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
             var kic_legend_html = [];
             var kic_full_legend_html = [];
+
+            var kic_service_more_btn = '<button id="kic_service_more_btn" onclick="kic_full_service_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var kic_full_service_more_btn = '<button id="kic_full_service_more_btn" onclick="kic_service_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var kic_service_html = [];
+            var kic_full_service_html = [];
+
+
+            generateServiceList(kic_service_list);
 
             var kic_chart = new Chart(document.getElementById("kic-lineChart"), {
                 type: 'line',
@@ -84,11 +104,11 @@
                     legendCallback: function(chart) {
                         console.log(chart);
                         kic_legend_html.push('<table class="table table-bordered table-hover table-striped">');
-                        kic_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        kic_legend_html.push('<thead> <tr><th>No</th><th>Region</th><th>회원수</th></tr></thead>');
                         kic_legend_html.push('<tbody>');
 
                         kic_full_legend_html.push('<table class="table table-bordered table-hover table-striped">');
-                        kic_full_legend_html.push('<thead> <tr><th>No</th><th>lable name</th><th>Current 회원수</th></tr></thead>');
+                        kic_full_legend_html.push('<thead> <tr><th>No</th><th>Region</th><th>회원수</th></tr></thead>');
                         kic_full_legend_html.push('<tbody>');
 
                         for (var i=0; i<chart.data.datasets.length; i++) {
@@ -100,7 +120,7 @@
                             kic_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetKIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                 + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                 + chart.data.datasets[i].label +'</td>');
-                            kic_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            kic_full_legend_html.push('<td align="right" class="chart-legend-label-text">'+lastData.format()+'</td>');
                             kic_full_legend_html.push('</tr>');
 
                             // limit
@@ -110,7 +130,7 @@
                                 kic_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetKIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                     + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                     + chart.data.datasets[i].label +'</td>');
-                                kic_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                kic_legend_html.push('<td align="right"  class="chart-legend-label-text">'+lastData.format()+'</td>');
                                 kic_legend_html.push('</tr>');
                             }
 
@@ -167,6 +187,58 @@
 
             function kic_full_more_view(){ // 더보기
                 document.getElementById('kic-js-legend').innerHTML = kic_full_legend_html.join("");
+            }
+
+            function generateServiceList(serviceList){
+
+                kic_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                kic_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                kic_service_html.push('<tbody>');
+
+                kic_full_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                kic_full_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                kic_full_service_html.push('<tbody>');
+
+                for (var i=0; i< serviceList.length; i++) {
+                    // full
+                    kic_full_service_html.push('<tr>');
+                    kic_full_service_html.push('<td>' + (i+1) +'</td>');
+                    kic_full_service_html.push('<td class="chart-legend-label-text" >'
+
+                        + serviceList[i].svcName +'</td>');
+                    kic_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                    kic_full_service_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        kic_service_html.push('<tr>');
+                        kic_service_html.push('<td>' + (i+1) +'</td>');
+                        kic_service_html.push('<td class="chart-legend-label-text" >'
+
+                            + serviceList[i].svcName +'</td>');
+                        kic_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                        kic_service_html.push('</tr>');
+                    }
+
+                }
+
+                kic_service_html.push('</tbody>');
+                kic_service_html.push('</table>');
+                kic_service_html.push(kic_service_more_btn);
+
+                kic_full_service_html.push('</tbody>');
+                kic_full_service_html.push('</table>');
+                kic_full_service_html.push(kic_full_service_more_btn);
+
+                document.getElementById('kic-service-list').innerHTML =  kic_service_html.join("");
+            }
+
+            function kic_service_more_view(){ // 줄이기
+                document.getElementById('kic-service-list').innerHTML = kic_service_html.join("");
+            }
+
+            function kic_full_service_more_view(){ // 더보기
+                document.getElementById('kic-service-list').innerHTML = kic_full_service_html.join("");
             }
 
             /*]]>*/

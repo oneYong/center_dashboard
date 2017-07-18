@@ -3,6 +3,7 @@ package com.center.dashboard.admin.service;
 import com.center.dashboard.mapper.DashBoardMapper;
 import com.center.dashboard.util.ERegion;
 import com.center.dashboard.vo.TotalUserVO;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,16 +52,15 @@ public class KICService {
         return this.chartDatasets;
     }
 
-
-    public String getDateAddComma(String date){
-        return "'"+ date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6)+"'";
+    public String getServiceListToJson(String date) throws Exception{
+        List<TotalUserVO> serviceList = dashBoardMapper.getServiceList_KIC(date);
+        return new Gson().toJson(serviceList);
     }
 
     public void initStartEndDate(String startDate, String endDate){
         this.startDate = startDate;
         this.endDate = endDate;
     }
-
 
     public void run(String startDate, String endDate) throws Exception{
         // 1. init

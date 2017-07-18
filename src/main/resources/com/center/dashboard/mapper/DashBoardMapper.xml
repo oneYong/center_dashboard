@@ -171,4 +171,56 @@
         ]]>
     </select>
 
+    <select id="getServiceList_KIC" parameterType="String" resultType="totalUserVO" >
+        <![CDATA[
+            select svc_code as svcCode
+                  ,svc_name as svcName
+                  ,sum(tcnt) as tCnt
+              from sbc_kic_user
+             where crt_date = #{date}
+          group by svc_code
+          order by tCnt desc;
+
+        ]]>
+    </select>
+
+    <select id="getServiceList_AIC" parameterType="String" resultType="totalUserVO" >
+        <![CDATA[
+            select svc_code as svcCode
+                  ,svc_name as svcName
+                  ,sum(tcnt) as tCnt
+              from sbc_aic_user
+             where crt_date = #{date}
+          group by svc_code
+          order by tCnt desc;
+
+        ]]>
+    </select>
+
+    <select id="getServiceList_EIC" parameterType="String" resultType="totalUserVO" >
+        <![CDATA[
+            select svc_code as svcCode
+                  ,svc_name as svcName
+                  ,sum(tcnt) as tCnt
+              from sbc_eic_user
+             where crt_date = #{date}
+          group by svc_code
+          order by tCnt desc;
+
+        ]]>
+    </select>
+
+    <select id="getServiceList_RUC" parameterType="String" resultType="totalUserVO" >
+        <![CDATA[
+            select svc_code as svcCode
+                  ,svc_name as svcName
+                  ,sum(tcnt) as tCnt
+              from sbc_ruc_user
+             where crt_date = #{date}
+          group by svc_code
+          order by tCnt desc;
+
+        ]]>
+    </select>
+
 </mapper>

@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class TotalUserVO {
     private String crtDate;
+    private String svcCode;
+    private String svcName;
     private String cntryCode;
     private String cntryName;
     private String tCnt;
