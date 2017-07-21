@@ -118,6 +118,7 @@ public class DashBoardController {
         aicService.run( pStartDate, pEndDate);
         model.addAttribute("aicLabel",aicService.getChartLabels());
         model.addAttribute("aicDatasets",aicService.getChartDatasets());
+        model.addAttribute("aicServiceList",aicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
 
         return "admin/totalUserByRegion/totalUserByAIC";
     }
@@ -138,6 +139,7 @@ public class DashBoardController {
         eicService.run( pStartDate, pEndDate);
         model.addAttribute("eicLabel",eicService.getChartLabels());
         model.addAttribute("eicDatasets",eicService.getChartDatasets());
+        model.addAttribute("eicServiceList",eicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
 
         return "admin/totalUserByRegion/totalUserByEIC";
     }
@@ -158,7 +160,7 @@ public class DashBoardController {
         rucService.run( pStartDate, pEndDate);
         model.addAttribute("rucLabel",rucService.getChartLabels());
         model.addAttribute("rucDatasets",rucService.getChartDatasets());
-
+        model.addAttribute("rucServiceList",rucService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
         return "admin/totalUserByRegion/totalUserByRUC";
     }
 }

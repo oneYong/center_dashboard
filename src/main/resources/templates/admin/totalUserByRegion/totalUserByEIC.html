@@ -1,22 +1,33 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div class="col-lg-8">
+<div class="col-lg-6">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> EIC 전체 사용자 그래프</h3>
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> EIC 그래프</h3>
         </div>
         <div class="panel-body" style="overflow: hidden;">
-            <canvas id="eic-lineChart" height="230" width="500" ></canvas>
+            <canvas id="eic-lineChart" height="310" width="500" ></canvas>
         </div>
     </div>
 </div>
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> EIC 전체 사용자 리스트</h3>
         </div>
         <div class="panel-body">
             <div id="eic-js-legend" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> EIC Service 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="eic-service-list"></div>
 
         </div>
     </div>
@@ -34,6 +45,7 @@
 
             // to object
             var eic_datasets = eval("("+[[${eicDatasets}]]+")");
+            var eic_service_list = JSON.parse([[${eicServiceList}]]);
 
             var eic_chart_view = false;
 
@@ -42,6 +54,13 @@
             var eic_full_more_btn = '<button id="eic_full_more_btn" onclick="eic_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
             var eic_legend_html = [];
             var eic_full_legend_html = [];
+
+            var eic_service_more_btn = '<button id="eic_service_more_btn" onclick="eic_full_service_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var eic_full_service_more_btn = '<button id="eic_full_service_more_btn" onclick="eic_service_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var eic_service_html = [];
+            var eic_full_service_html = [];
+
+            generateServiceListEIC(eic_service_list);
 
             var eic_chart = new Chart(document.getElementById("eic-lineChart"), {
                 type: 'line',
@@ -75,7 +94,7 @@
                             ticks: {
                                 callback: function (value, index, values) {
                                     if(parseInt(value) == value)
-                                        return value;
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
                                 },
                                 // min : 0,
                                 beginAtZero: true   // minimum value will be 0.
@@ -101,7 +120,7 @@
                             eic_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetEIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                 + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                 + chart.data.datasets[i].label +'</td>');
-                            eic_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            eic_full_legend_html.push('<td align="right"  class="chart-legend-label-text">'+lastData.format()+'</td>');
                             eic_full_legend_html.push('</tr>');
 
                             // limit
@@ -111,7 +130,7 @@
                                 eic_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetEIC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                     + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                     + chart.data.datasets[i].label +'</td>');
-                                eic_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                eic_legend_html.push('<td align="right"  class="chart-legend-label-text">'+lastData.format()+'</td>');
                                 eic_legend_html.push('</tr>');
                             }
 
@@ -168,6 +187,58 @@
 
             function eic_full_more_view(){ // 더보기
                 document.getElementById('eic-js-legend').innerHTML = eic_full_legend_html.join("");
+            }
+
+            function generateServiceListEIC(serviceList){
+
+                eic_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                eic_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                eic_service_html.push('<tbody>');
+
+                eic_full_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                eic_full_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                eic_full_service_html.push('<tbody>');
+
+                for (var i=0; i< serviceList.length; i++) {
+                    // full
+                    eic_full_service_html.push('<tr>');
+                    eic_full_service_html.push('<td>' + (i+1) +'</td>');
+                    eic_full_service_html.push('<td class="chart-legend-label-text" >'
+
+                        + serviceList[i].svcName +'</td>');
+                    eic_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                    eic_full_service_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        eic_service_html.push('<tr>');
+                        eic_service_html.push('<td>' + (i+1) +'</td>');
+                        eic_service_html.push('<td class="chart-legend-label-text" >'
+
+                            + serviceList[i].svcName +'</td>');
+                        eic_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                        eic_service_html.push('</tr>');
+                    }
+
+                }
+
+                eic_service_html.push('</tbody>');
+                eic_service_html.push('</table>');
+                eic_service_html.push(eic_service_more_btn);
+
+                eic_full_service_html.push('</tbody>');
+                eic_full_service_html.push('</table>');
+                eic_full_service_html.push(eic_full_service_more_btn);
+
+                document.getElementById('eic-service-list').innerHTML =  eic_service_html.join("");
+            }
+
+            function eic_service_more_view(){ // 줄이기
+                document.getElementById('eic-service-list').innerHTML = eic_service_html.join("");
+            }
+
+            function eic_full_service_more_view(){ // 더보기
+                document.getElementById('eic-service-list').innerHTML = eic_full_service_html.join("");
             }
 
             /*]]>*/

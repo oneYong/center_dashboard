@@ -12,13 +12,20 @@
 
     <div id="page-wrapper">
         <div class="container-fluid">
+
             <!-- Page Heading -->
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
                         사용자 전체 현황  <small>(최근 7일동안의 일별 증감 수 그래프로 표현)</small>
                     </h1>
+                    <div id="loading" style="display:inline;height:100px; ">
+                        <span style="position:relative; top: -20%; left: 40%;">
+                            <img th:src="@{/static/img/Loading_icon.gif}" />
+                        </span>
+                    </div>
                 </div>
+
             </div>
 
             <!-- /.row -->
@@ -121,11 +128,7 @@
             <!-- /.row -->
             <!-- /.row -->
             <div class="row">
-                <div id="loading" style="height:100px; ">
-                    <span style="position:relative; top: -20%; left: 30%;">
-                        <img th:src="@{/static/img/Loading_icon.gif}" />
-                    </span>
-                </div>
+
                 <div id="totalUserByRUC">
                 </div>
             </div>
@@ -159,20 +162,20 @@
 
 
                 $("#totalUserByKIC").load("/web/admin/totalUserByRegion/totalUserByKIC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
-                    $("#loading").hide();
+                    $("#totalUserByAIC").load("/web/admin/totalUserByRegion/totalUserByAIC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
+                        $("#totalUserByEIC").load("/web/admin/totalUserByRegion/totalUserByEIC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
+                            $("#totalUserByRUC").load("/web/admin/totalUserByRegion/totalUserByRUC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
+                                $("#loading").hide();
+                            });
+                        });
+                    });
                 });
 
-                $("#totalUserByAIC").load("/web/admin/totalUserByRegion/totalUserByAIC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
 
-                });
 
-                $("#totalUserByEIC").load("/web/admin/totalUserByRegion/totalUserByEIC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
 
-                });
 
-                $("#totalUserByRUC").load("/web/admin/totalUserByRegion/totalUserByRUC?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
 
-                });
 
 
                 // datepicker 추가

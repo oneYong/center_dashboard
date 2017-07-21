@@ -60,7 +60,7 @@
             var kic_full_service_html = [];
 
 
-            generateServiceList(kic_service_list);
+            generateServiceListKIC(kic_service_list);
 
             var kic_chart = new Chart(document.getElementById("kic-lineChart"), {
                 type: 'line',
@@ -94,7 +94,7 @@
                             ticks: {
                                 callback: function (value, index, values) {
                                     if(parseInt(value) == value)
-                                        return value;
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 },
                                 // min : 0,
                                 beginAtZero: true   // minimum value will be 0.
@@ -189,7 +189,7 @@
                 document.getElementById('kic-js-legend').innerHTML = kic_full_legend_html.join("");
             }
 
-            function generateServiceList(serviceList){
+            function generateServiceListKIC(serviceList){
 
                 kic_service_html.push('<table class="table table-bordered table-hover table-striped">');
                 kic_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');

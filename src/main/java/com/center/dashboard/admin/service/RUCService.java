@@ -2,6 +2,7 @@ package com.center.dashboard.admin.service;
 
 import com.center.dashboard.mapper.DashBoardMapper;
 import com.center.dashboard.vo.TotalUserVO;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,11 @@ public class RUCService {
     }
     public String getChartDatasets(){
         return this.chartDatasets;
+    }
+
+    public String getServiceListToJson(String date) throws Exception{
+        List<TotalUserVO> serviceList = dashBoardMapper.getServiceList_RUC(date);
+        return new Gson().toJson(serviceList);
     }
 
     public void initStartEndDate(String startDate, String endDate){

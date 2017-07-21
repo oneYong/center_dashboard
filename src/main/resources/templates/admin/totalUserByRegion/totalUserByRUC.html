@@ -1,22 +1,33 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div class="col-lg-8">
+<div class="col-lg-6">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC 전체 사용자 그래프</h3>
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC 그래프</h3>
         </div>
         <div class="panel-body" style="overflow: hidden;">
-            <canvas id="ruc-lineChart" height="230" width="500" ></canvas>
+            <canvas id="ruc-lineChart" height="310" width="500" ></canvas>
         </div>
     </div>
 </div>
-<div class="col-lg-4">
+<div class="col-lg-3">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC 전체 사용자 리스트</h3>
         </div>
         <div class="panel-body">
             <div id="ruc-js-legend" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> RUC Service 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="ruc-service-list"></div>
 
         </div>
     </div>
@@ -34,6 +45,7 @@
 
             // to object
             var ruc_datasets = eval("("+[[${rucDatasets}]]+")");
+            var ruc_service_list = JSON.parse([[${rucServiceList}]]);
 
             var ruc_chart_view = false;
 
@@ -42,6 +54,13 @@
             var ruc_full_more_btn = '<button id="ruc_full_more_btn" onclick="ruc_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
             var ruc_legend_html = [];
             var ruc_full_legend_html = [];
+
+            var ruc_service_more_btn = '<button id="ruc_service_more_btn" onclick="ruc_full_service_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var ruc_full_service_more_btn = '<button id="ruc_full_service_more_btn" onclick="ruc_service_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var ruc_service_html = [];
+            var ruc_full_service_html = [];
+
+            generateServiceListRUC(ruc_service_list);
 
             var ruc_chart = new Chart(document.getElementById("ruc-lineChart"), {
                 type: 'line',
@@ -75,7 +94,7 @@
                             ticks: {
                                 callback: function (value, index, values) {
                                     if(parseInt(value) == value)
-                                        return value;
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
                                 },
                                 // min : 0,
                                 beginAtZero: true   // minimum value will be 0.
@@ -101,7 +120,7 @@
                             ruc_full_legend_html.push('<td class="chart-legend-label-text" onclick="updateDataseRUC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                 + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                 + chart.data.datasets[i].label +'</td>');
-                            ruc_full_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                            ruc_full_legend_html.push('<td align="right" class="chart-legend-label-text">'+lastData.format()+'</td>');
                             ruc_full_legend_html.push('</tr>');
 
                             // limit
@@ -111,7 +130,7 @@
                                 ruc_legend_html.push('<td class="chart-legend-label-text" onclick="updateDatasetRUC(event, ' + '\'' + chart.legend.legendItems[i].datasetIndex + '\'' + ')">'
                                     + '<span style="display: inline-block;width:12px;height:12px;margin-right: 5px;background-color:'+ chart.data.datasets[i].backgroundColor + '"></span>'
                                     + chart.data.datasets[i].label +'</td>');
-                                ruc_legend_html.push('<td class="chart-legend-label-text">'+lastData+'</td>');
+                                ruc_legend_html.push('<td align="right" class="chart-legend-label-text">'+lastData.format()+'</td>');
                                 ruc_legend_html.push('</tr>');
                             }
 
@@ -168,6 +187,58 @@
 
             function ruc_full_more_view(){ // 더보기
                 document.getElementById('ruc-js-legend').innerHTML = ruc_full_legend_html.join("");
+            }
+
+            function generateServiceListRUC(serviceList){
+
+                ruc_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                ruc_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                ruc_service_html.push('<tbody>');
+
+                ruc_full_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                ruc_full_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>회원수</th></tr></thead>');
+                ruc_full_service_html.push('<tbody>');
+
+                for (var i=0; i< serviceList.length; i++) {
+                    // full
+                    ruc_full_service_html.push('<tr>');
+                    ruc_full_service_html.push('<td>' + (i+1) +'</td>');
+                    ruc_full_service_html.push('<td class="chart-legend-label-text" >'
+
+                        + serviceList[i].svcName +'</td>');
+                    ruc_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                    ruc_full_service_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        ruc_service_html.push('<tr>');
+                        ruc_service_html.push('<td>' + (i+1) +'</td>');
+                        ruc_service_html.push('<td class="chart-legend-label-text" >'
+
+                            + serviceList[i].svcName +'</td>');
+                        ruc_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
+                        ruc_service_html.push('</tr>');
+                    }
+
+                }
+
+                ruc_service_html.push('</tbody>');
+                ruc_service_html.push('</table>');
+                ruc_service_html.push(ruc_service_more_btn);
+
+                ruc_full_service_html.push('</tbody>');
+                ruc_full_service_html.push('</table>');
+                ruc_full_service_html.push(ruc_full_service_more_btn);
+
+                document.getElementById('ruc-service-list').innerHTML =  ruc_service_html.join("");
+            }
+
+            function ruc_service_more_view(){ // 줄이기
+                document.getElementById('ruc-service-list').innerHTML = ruc_service_html.join("");
+            }
+
+            function ruc_full_service_more_view(){ // 더보기
+                document.getElementById('ruc-service-list').innerHTML = ruc_full_service_html.join("");
             }
 
             /*]]>*/
