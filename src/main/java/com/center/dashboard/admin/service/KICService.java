@@ -66,8 +66,8 @@ public class KICService {
         // 1. init
         initStartEndDate(startDate,endDate);
 
-        dateList = dashBoardMapper.getCrtDate_KIC(startDate, endDate);
-        cntryCodeList = dashBoardMapper.getCntryCode_KIC(endDate, endDate);
+        dateList = dashBoardMapper.getCrtDate(startDate, endDate);
+        cntryCodeList = dashBoardMapper.getCntryCode_KIC(startDate, endDate);
         totalUserList = dashBoardMapper.getTotalUser_KIC(startDate,endDate);
 
         chartLabels = makeChartService.makeChartLabels(dateList);

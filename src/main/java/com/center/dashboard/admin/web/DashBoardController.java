@@ -43,6 +43,9 @@ public class DashBoardController {
     @Autowired
     private RUCService rucService;
 
+    @Autowired
+    private AWSBillingService awsBillingService;
+
     private final double LIMIT_USER = 10000.0;
 
     @RequestMapping(value="/dashboard", method = RequestMethod.GET)
@@ -64,6 +67,25 @@ public class DashBoardController {
         model.addAttribute("totalCnt",String.format("%.1f",totalCnt / LIMIT_USER));
         model.addAttribute("newTotalCnt",String.format("%.1f", newTotalCnt / LIMIT_USER));
         return "admin/dashboard/totalUser";
+    }
+
+    @RequestMapping(value="/dashboard/totalBilling", method = RequestMethod.GET)
+    public String totalBilling(Model model) throws Exception{
+        String title = CmmDate.getStartEndDay(CmmDate.getLastDayList().get(0));
+        String totalCost = awsBillingService.getTotalCost();
+        String oneMonth = awsBillingService.getBeforeMonth(1);
+        String twoMonth = awsBillingService.getBeforeMonth(2);
+        String oneMonthCost = awsBillingService.getBeforeMonthTotalCost(1);
+        String twoMonthCost = awsBillingService.getBeforeMonthTotalCost(2);
+
+        model.addAttribute("title",title);
+        model.addAttribute("totalCost","$ "+totalCost);
+        model.addAttribute("oneMonth",oneMonth);
+        model.addAttribute("twoMonth",twoMonth);
+        model.addAttribute("oneMonthCost","$ "+oneMonthCost);
+        model.addAttribute("twoMonthCost","$ "+twoMonthCost);
+
+        return "admin/dashboard/totalBilling";
     }
 
     @RequestMapping(value="/totalUserByRegion", method = RequestMethod.GET)
@@ -97,7 +119,7 @@ public class DashBoardController {
 
         model.addAttribute("kicLabel",kicService.getChartLabels());
         model.addAttribute("kicDatasets",kicService.getChartDatasets());
-        model.addAttribute("kicServiceList",kicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
+        model.addAttribute("kicServiceList",kicService.getServiceListToJson(pEndDate));
 
         return "admin/totalUserByRegion/totalUserByKIC";
     }
@@ -118,7 +140,7 @@ public class DashBoardController {
         aicService.run( pStartDate, pEndDate);
         model.addAttribute("aicLabel",aicService.getChartLabels());
         model.addAttribute("aicDatasets",aicService.getChartDatasets());
-        model.addAttribute("aicServiceList",aicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
+        model.addAttribute("aicServiceList",aicService.getServiceListToJson(pEndDate));
 
         return "admin/totalUserByRegion/totalUserByAIC";
     }
@@ -139,7 +161,7 @@ public class DashBoardController {
         eicService.run( pStartDate, pEndDate);
         model.addAttribute("eicLabel",eicService.getChartLabels());
         model.addAttribute("eicDatasets",eicService.getChartDatasets());
-        model.addAttribute("eicServiceList",eicService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
+        model.addAttribute("eicServiceList",eicService.getServiceListToJson(pEndDate));
 
         return "admin/totalUserByRegion/totalUserByEIC";
     }
@@ -160,7 +182,7 @@ public class DashBoardController {
         rucService.run( pStartDate, pEndDate);
         model.addAttribute("rucLabel",rucService.getChartLabels());
         model.addAttribute("rucDatasets",rucService.getChartDatasets());
-        model.addAttribute("rucServiceList",rucService.getServiceListToJson(CmmDate.getYesterdayGMTDate()));
+        model.addAttribute("rucServiceList",rucService.getServiceListToJson(pEndDate));
         return "admin/totalUserByRegion/totalUserByRUC";
     }
 }

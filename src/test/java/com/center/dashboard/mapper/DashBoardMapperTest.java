@@ -1,6 +1,7 @@
 package com.center.dashboard.mapper;
 
 import com.center.dashboard.util.CmmDate;
+import com.center.dashboard.vo.BillingDataVO;
 import com.center.dashboard.vo.TotalUserVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +37,6 @@ public class DashBoardMapperTest {
 
     @Test
     public void test_getCrtDate_KIC() throws Exception{
-        List<String> crtDateList = dashBoardMapper.getCrtDate_KIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
-        System.out.println(crtDateList);
     }
 
     @Test
@@ -53,8 +52,7 @@ public class DashBoardMapperTest {
 
     @Test
     public void test_getCrtDate_AIC() throws Exception{
-        List<String> crtDateList = dashBoardMapper.getCrtDate_AIC(CmmDate.getAWeeksAgoGMTDate(),CmmDate.getTodayGMTDate());
-        System.out.println(crtDateList);
+
     }
 
     @Test
@@ -80,6 +78,13 @@ public class DashBoardMapperTest {
         System.out.println(serviceList_aic);
         System.out.println(serviceList_eic);
         System.out.println(serviceList_ruc);
+    }
+
+    @Test
+    public void test_getAWSBillingTotalCost_CNS() throws Exception{
+
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList());
+        System.out.println(billingDataVOList);
     }
 
 }

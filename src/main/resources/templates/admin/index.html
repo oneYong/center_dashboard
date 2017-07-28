@@ -23,41 +23,7 @@
             <!-- /.row -->
             <div class="row">
                 <div id="totalUser"></div>
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 클라우드 인프라 운영비</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
-                                    <span style="font-size: 13px;">2017.01.01 ~ 2017.03.21</span>
-                                </div>
-                            </div>
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;"><span style="font-size: 40px;color:green;">1억 2200만원</span>
-                                </div>
-                            </div>
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;">
-                                    <span style="font-size: 18px;">2월 비용 : </span>
-                                    <span style="font-size: 18px;color:green;">5200만원</span>
-                                </div>
-                            </div>
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;">
-                                    <span style="font-size: 18px;">3월 비용(01~21) : </span>
-                                    <span style="font-size: 18px;color:green;">3500만원</span>
-                                </div>
-                            </div>
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;height: 25px;">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                <div id="totalBilling"></div>
 
                 <div class="col-lg-4">
                     <div class="panel panel-default">
@@ -257,8 +223,12 @@
         <script>
             /*<![CDATA[*/
             $( document ).ready(function() {
-                var v_url = "/web/admin/dashboard/totalUser";
-                $("#totalUser").load(v_url,null, function() {
+
+                $("#totalUser").load("/web/admin/dashboard/totalUser",null, function() {
+                    $(this).slideDown("slow");
+                });
+                $("#totalBilling").load("/web/admin/dashboard/totalBilling",null, function() {
+                    $(this).slideDown("slow");
                 });
             });
             /*]]>*/

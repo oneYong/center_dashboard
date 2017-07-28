@@ -66,8 +66,8 @@ public class EICService {
     public void run(String startDate, String endDate) throws Exception{
         // 1. init
         initStartEndDate(startDate,endDate);
-        dateList = dashBoardMapper.getCrtDate_EIC(startDate, endDate);
-        cntryCodeList = dashBoardMapper.getCntryCode_EIC(endDate, endDate);
+        dateList = dashBoardMapper.getCrtDate(startDate, endDate);
+        cntryCodeList = dashBoardMapper.getCntryCode_EIC(startDate, endDate);
         totalUserList = dashBoardMapper.getTotalUser_EIC(startDate,endDate);
 
         chartLabels = makeChartService.makeChartLabels(dateList);

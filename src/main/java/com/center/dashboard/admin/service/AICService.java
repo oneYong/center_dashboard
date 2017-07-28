@@ -67,8 +67,8 @@ public class AICService {
     public void run(String startDate, String endDate) throws Exception{
         // 1. init
         initStartEndDate(startDate,endDate);
-        dateList = dashBoardMapper.getCrtDate_AIC(startDate, endDate);
-        cntryCodeList = dashBoardMapper.getCntryCode_AIC(endDate, endDate);
+        dateList = dashBoardMapper.getCrtDate(startDate, endDate);
+        cntryCodeList = dashBoardMapper.getCntryCode_AIC(startDate, endDate);
         totalUserList = dashBoardMapper.getTotalUser_AIC(startDate,endDate);
 
         chartLabels = makeChartService.makeChartLabels(dateList);

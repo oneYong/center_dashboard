@@ -65,8 +65,8 @@ public class RUCService {
     public void run(String startDate, String endDate) throws Exception{
         // 1. init
         initStartEndDate(startDate,endDate);
-        dateList = dashBoardMapper.getCrtDate_RUC(startDate, endDate);
-        cntryCodeList = dashBoardMapper.getCntryCode_RUC(endDate, endDate);
+        dateList = dashBoardMapper.getCrtDate(startDate, endDate);
+        cntryCodeList = dashBoardMapper.getCntryCode_RUC(startDate, endDate);
         totalUserList = dashBoardMapper.getTotalUser_RUC(startDate,endDate);
 
         chartLabels = makeChartService.makeChartLabels(dateList);

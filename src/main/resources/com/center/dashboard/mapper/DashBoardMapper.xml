@@ -52,14 +52,12 @@
         ]]>
     </select>
 
-    <select id="getCrtDate_KIC" parameterType="String" resultType="String" >
+    <select id="getCrtDate" parameterType="String" resultType="String" >
         <![CDATA[
-            select crt_date as crtDate
-              from sbc_kic_total_user
-             where crt_date >= #{startDate}
-               and crt_date <= #{endDate}
-          GROUP BY crt_date;
-
+              select ds as crtDate
+                from sbc_date_table
+               where ds >= #{startDate}
+                 and ds <= #{endDate};
         ]]>
     </select>
 
@@ -84,17 +82,6 @@
              where crt_date >= #{startDate}
                and crt_date <= #{endDate}
           GROUP BY cntry_code order by tcnt desc;
-
-        ]]>
-    </select>
-
-    <select id="getCrtDate_AIC" parameterType="String" resultType="String" >
-        <![CDATA[
-            select crt_date as crtDate
-              from sbc_aic_total_user
-             where crt_date >= #{startDate}
-               and crt_date <= #{endDate}
-          GROUP BY crt_date;
 
         ]]>
     </select>
@@ -124,17 +111,6 @@
         ]]>
     </select>
 
-    <select id="getCrtDate_EIC" parameterType="String" resultType="String" >
-        <![CDATA[
-            select crt_date as crtDate
-              from sbc_eic_total_user
-             where crt_date >= #{startDate}
-               and crt_date <= #{endDate}
-          GROUP BY crt_date;
-
-        ]]>
-    </select>
-
     <select id="getTotalUser_RUC" parameterType="String" resultType="totalUserVO" >
         <![CDATA[
             select crt_date as crtDate
@@ -156,17 +132,6 @@
              where crt_date >= #{startDate}
                and crt_date <= #{endDate}
           GROUP BY cntry_code order by tcnt desc;
-
-        ]]>
-    </select>
-
-    <select id="getCrtDate_RUC" parameterType="String" resultType="String" >
-        <![CDATA[
-            select crt_date as crtDate
-              from sbc_ruc_total_user
-             where crt_date >= #{startDate}
-               and crt_date <= #{endDate}
-          GROUP BY crt_date;
 
         ]]>
     </select>
@@ -221,6 +186,21 @@
           order by tCnt desc;
 
         ]]>
+    </select>
+
+    <select id="getAWSBillingTotalCost_CNS" parameterType="list" resultType="billingDataVO" >
+
+            select total_date as totalDate
+                  ,sum(total_cost) as totalCost
+              from sbc_aws_account_billinginfo
+             where total_date in
+                     <foreach collection="dateList" item="item" separator=","
+                              open="(" close=")">
+                         #{item}
+                     </foreach>
+              group by total_date order by total_date DESC ;
+
+
     </select>
 
 </mapper>
