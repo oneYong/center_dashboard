@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        전체현황 <small>기준일: 17.03.21</small>
+                        전체현황 <small>기준일: <th:block th:text="${standardDate}"></th:block></small>
                     </h1>
                 </div>
             </div>
@@ -24,31 +24,9 @@
             <div class="row">
                 <div id="totalUser"></div>
                 <div id="totalBilling"></div>
+                <div id="totalFault"></div>
 
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 장애 현황</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 센터 자립율(TBD)</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="list-group">
-                                <div class="col-lg-12" style="text-align: center;"><h3>센터 자립율 </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <!-- /.row -->
 
@@ -228,6 +206,9 @@
                     $(this).slideDown("slow");
                 });
                 $("#totalBilling").load("/web/admin/dashboard/totalBilling",null, function() {
+                    $(this).slideDown("slow");
+                });
+                $("#totalFault").load("/web/admin/dashboard/totalFault",null, function() {
                     $(this).slideDown("slow");
                 });
             });

@@ -108,18 +108,34 @@ public class CmmDate {
             return lastDayList;
         }
 
-
+        int nowYear = Integer.parseInt(getTodayGMTDate().substring(0,4));
+        int nowMonth = Integer.parseInt(getTodayGMTDate().substring(4,6));
         while(true){
             int year = Integer.parseInt(endMonth.substring(0,4));
             int month = Integer.parseInt(endMonth.substring(4,6));
-            lastDayList.add(getLastDay(year,month));
+
+            if(year == nowYear && month == nowMonth){
+                String now = getYesterdayGMTDate();
+                now = now.substring(0,4) +"-" + now.substring(4,6) + "-" + now.substring(6);
+                lastDayList.add(now);
+            }else{
+                lastDayList.add(getLastDay(year,month));
+            }
+
+
 
             if(startMonth.equals(endMonth))break;
 
             endMonth = getBeforeYearMonth(endMonth,1).substring(0,6);
         }
 
-        return lastDayList;
+        List<String> tempList = new ArrayList<>();
+
+        for(int i = lastDayList.size()-1; i >= 0; i--){
+            tempList.add(lastDayList.get(i));
+        }
+
+        return tempList;
     }
 
     public static String getStartEndDay(String day){

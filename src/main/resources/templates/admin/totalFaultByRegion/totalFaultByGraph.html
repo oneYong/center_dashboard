@@ -1,0 +1,164 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-7">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i>  <th:block th:text="${standardDate}"></th:block> 기준</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <div style="float:left;padding-left: 30px;width:250px;">
+                <span class="glyphicon glyphicon-flag" style="font-size:160px;color:#c1c1c1;padding: 0px 0 0 10px;position: relative;"></span>
+                <span style="font-size:40px;position: absolute;top:90px;left: 130px;">22일</span>
+            </div>
+            <div style="display:inline-block;top:50px;">
+                <span style="font-size:20px;padding: 0px 10 0 10px;"></span><br/>
+                <span style="font-size:50px;padding: 0px 10 0 10px;">무장애 22일 째!</span><br/>
+                <span style="font-size:20px;padding: 0px 0 0 10px;">시스템이 잘 관리되고 있습니다!</span>
+            </div>
+            <div style="">
+                <span style="font-size:45px;padding: 0px 10 0 10px;"></span><br/>
+                <div id="fault-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-5">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> <th:block th:text="${standardDate}"></th:block> 기준</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+
+            <div style="float:left;padding-left: 30px;width:300px;">
+                <div class="panel-title" style="text-align: center;margin-bottom: 10px;">서비스별 장애</div>
+                <div id="fault-count-service"></div>
+            </div>
+
+            <div style="display: inline-block;padding-left: 30px;width:300px;">
+                <div class="panel-title" style="text-align: center;margin-bottom: 10px;">지역별 장애</div>
+                <div id="fault-count-region"></div>
+
+                <div class="panel-title" style="text-align: center;margin-top:50px;margin-bottom: 10px;">
+                    <span style="font-size: 40px;">
+                                            전체 장애 건수
+                    </span>
+                </div>
+                <div id="fault-total-count"></div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var fault_list = JSON.parse([[${faultList}]]);
+            var fault_count_service = JSON.parse([[${faultCountByService}]]);
+            var fault_count_region = JSON.parse([[${faultCountByRegion}]]);
+            var fault_standard_month = [[${standardMonth}]];
+            var fault_total_count = [[${faultTotalCount}]];
+
+            var color_list = ["#1F77B4","#AEC7E8","#FF7F0E","#FFBB78","#2CA02C","#98DF8A","#D62728","#FF9896","#9467BD","#C5B0D5","#8C564B","#C49C94","#E377C2"];
+
+            set_fault_list(fault_list);
+            set_fault_count_service(fault_count_service);
+            set_fault_count_region(fault_count_region);
+            set_fault_total_count();
+
+            function set_fault_list(faultList){
+                var fault_list_html = [];
+                fault_list_html.push('<table class="table table-bordered table-hover table-striped">');
+                fault_list_html.push('<thead><tr><th>등록일</th><th>월정보</th><th>시스템</th><th>지역</th><th>등급</th><th>설명</th></tr></thead>');
+                fault_list_html.push('<tbody>');
+
+                for (var i=0; i< 3; i++) {
+                    fault_list_html.push('<tr>');
+                    fault_list_html.push('<td>' + faultList[i].registerDate +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].monthInfo +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].serviceName +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].region +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].grade +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].comment +'</td>');
+                    fault_list_html.push('</tr>');
+                }
+                fault_list_html.push('</tbody>');
+                fault_list_html.push('</table>');
+                document.getElementById('fault-list').innerHTML =  fault_list_html.join("");
+
+            }
+
+            function set_fault_count_service(faultCountService){
+                var fault_count_service_html = [];
+
+
+                for (var i=0; i< faultCountService.length; i++) {
+                    var index = i % color_list.length;
+
+                    if(faultCountService[i].faultCount > 0) {
+                        fault_count_service_html.push('<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +faultCountService[i].faultInfoId +' data-month_info='+fault_standard_month+'>')
+                        fault_count_service_html.push('<div class="progress" style="margin-bottom: 5px;">');
+                        fault_count_service_html.push('<div class="progress-bar" role="progressbar"  style="width: '+(faultCountService[i].faultCount*10)+'%;background-color:'+color_list[index]+';"></div>');
+                        fault_count_service_html.push('<span class="progress-type">'+faultCountService[i].serviceName+'</span>');
+                        fault_count_service_html.push('<span class="progress-completed">'+faultCountService[i].faultCount+'</span>');
+                        fault_count_service_html.push(' </div>');
+                        fault_count_service_html.push(' </a>');
+                    }else{
+                        fault_count_service_html.push('<div class="progress" style="margin-bottom: 5px;">');
+                        fault_count_service_html.push('<div class="progress-bar" role="progressbar"  style="width: '+(faultCountService[i].faultCount*10)+'%;background-color:'+color_list[index]+';"></div>');
+                        fault_count_service_html.push('<span class="progress-type">'+faultCountService[i].serviceName+'</span>');
+                        fault_count_service_html.push('<span class="progress-completed">'+faultCountService[i].faultCount+'</span>');
+                        fault_count_service_html.push(' </div>');
+                    }
+
+                }
+
+                document.getElementById('fault-count-service').innerHTML =  fault_count_service_html.join("");
+
+            }
+
+            function set_fault_count_region(faultCountRegion){
+                var fault_count_region_html = [];
+
+
+                for (var i=0; i< faultCountRegion.length; i++) {
+                    var index = i % color_list.length;
+
+
+                    if(faultCountRegion[i].faultCount > 0) {
+                        fault_count_region_html.push('<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' + 0 +' data-month_info='+fault_standard_month+' data-region='+faultCountRegion[i].region+'>');
+                        fault_count_region_html.push('<div class="progress" style="margin-bottom: 5px;">');
+                        fault_count_region_html.push('<div class="progress-bar" role="progressbar"  style="width: '+(faultCountRegion[i].faultCount*10)+'%;background-color:'+color_list[index]+';"></div>');
+                        fault_count_region_html.push('<span class="progress-type">'+faultCountRegion[i].region+'</span>');
+                        fault_count_region_html.push('<span class="progress-completed">'+faultCountRegion[i].faultCount+'</span>');
+                        fault_count_region_html.push(' </div>');
+                        fault_count_region_html.push(' </a>');
+                    }else{
+                        fault_count_region_html.push('<div class="progress" style="margin-bottom: 5px;">');
+                        fault_count_region_html.push('<div class="progress-bar" role="progressbar"  style="width: '+(faultCountRegion[i].faultCount*10)+'%;background-color:'+color_list[index]+';"></div>');
+                        fault_count_region_html.push('<span class="progress-type">'+faultCountRegion[i].region+'</span>');
+                        fault_count_region_html.push('<span class="progress-completed">'+faultCountRegion[i].faultCount+'</span>');
+                        fault_count_region_html.push(' </div>');
+                    }
+                }
+
+                document.getElementById('fault-count-region').innerHTML =  fault_count_region_html.join("");
+
+            }
+
+            function set_fault_total_count(){
+                var fault_total_count_html = [];
+                fault_total_count_html.push('<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id="0" data-month_info="'+fault_standard_month+'" >');
+                fault_total_count_html.push('<div class="panel-title" style="text-align: center;"><span style="font-size: 80px;color:red;">');
+                fault_total_count_html.push(fault_total_count);
+                fault_total_count_html.push('</span></div></a>');
+                document.getElementById('fault-total-count').innerHTML =  fault_total_count_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

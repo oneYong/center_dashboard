@@ -1,0 +1,210 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<div class="col-lg-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> 월간 장애 테이블</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <div class="table-responsive">
+                <div id="fault-list-monthly"></div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- Start Modal FaultList -->
+<div id="modal-fault-list" class="modal">
+    <div class="modal-dialog" style="width: 1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-size: 14px; font-weight: 700"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> 장애 리스트</h4>
+            </div>
+            <div  class="modal-body">
+                <div class="table table-condensed">
+                    <div id="modal-modal-fault-list"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm pull-right" data-dismiss="modal" data-backdrop="false">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var fault_list_monthly = JSON.parse([[${faultListMonthly}]]);
+            var total_month_arr = g_month_str;
+
+            set_fault_list_monthly(total_month_arr,fault_list_monthly);
+
+            function set_fault_list_monthly(total_month_arr, result){
+                var v_month = total_month_arr.split(",");
+                var v_result = result;
+               
+                var v_html = '';
+                v_html += '<table class="table table-bordered table-hover table-striped">';
+                v_html += '<caption>장애 리스트</caption>';
+                v_html += '<thead class="thead-inverse"><tr>';
+                v_html += '<th style="text-align: center">지역</th>';
+                v_html += '<th style="text-align: center">서비스</th>';
+                v_html += '<th style="text-align: center">'+v_month[0]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[1]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[2]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[3]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[4]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[5]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[6]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[7]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[8]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[9]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[10]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[11]+'</th>';
+                v_html += '<th style="text-align: center">'+v_month[12]+'</th>';
+                v_html += '</tr></thead>';
+                v_html += '<tbody>';
+
+                // search rowspan
+                var kic_eic_aic_cnt = 0;
+                var ruc_cnt = 0;
+                $.each(v_result, function(i, val){
+
+                    var row  = val;
+                    if(row.region == "KIC" || row.region == "AIC" || row.region == "EIC" )
+                        kic_eic_aic_cnt++;
+                    if(row.region == "RUC")
+                        ruc_cnt++;
+                });
+
+                var beginRowSpan = false;
+                $.each(v_result, function(i, val){
+
+                    var row  = val;
+
+                    var value1 = row.monthCnt1 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[0]+'>'+row.monthCnt1+'</a>';
+                    var value2 = row.monthCnt2 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[1]+'>'+row.monthCnt2+'</a>';
+                    var value3 = row.monthCnt3 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[2]+'>'+row.monthCnt3+'</a>';
+                    var value4 = row.monthCnt4 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[3]+'>'+row.monthCnt4+'</a>';
+                    var value5 = row.monthCnt5 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[4]+'>'+row.monthCnt5+'</a>';
+                    var value6 = row.monthCnt6 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[5]+'>'+row.monthCnt6+'</a>';
+                    var value7 = row.monthCnt7 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[6]+'>'+row.monthCnt7+'</a>';
+                    var value8 = row.monthCnt8 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[7]+'>'+row.monthCnt8+'</a>';
+                    var value9 = row.monthCnt9 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[8]+'>'+row.monthCnt9+'</a>';
+                    var value10 = row.monthCnt10 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[9]+'>'+row.monthCnt10+'</a>';
+                    var value11 = row.monthCnt11 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[10]+'>'+row.monthCnt11+'</a>';
+                    var value12 = row.monthCnt12 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[11]+'>'+row.monthCnt12+'</a>';
+                    var value13 = row.monthCnt13 == 0 ? "0" :
+                        '<a href="#modal-fault-list" data-toggle="modal" data-target="#modal-fault-list" data-fault_info_id=' +row.faultInfoId +' data-month_info='+g_month_str.split(",")[12]+'>'+row.monthCnt13+'</a>';
+
+                    v_html += "<tr>";
+                    if(row.region == "KIC" || row.region == "AIC" || row.region == "EIC" ){
+                        if(!beginRowSpan){
+                            v_html += "<th align=center rowspan="+kic_eic_aic_cnt+">" + "<br><br><br><br><br><br>KIC<br><br>AIC<br><br>EIC" + "</th>";
+                            beginRowSpan = true;
+                        }
+                    }else if(row.region == "RUC"){
+                        if(beginRowSpan){
+                            v_html += "<th rowspan="+kic_eic_aic_cnt+">" + "<br><br><br>RUC" + "</th>";
+                            beginRowSpan = false;
+                        }
+                    }
+
+                    v_html += "<td>&nbsp;" + row.serviceName + "</td>";
+                    v_html += "<td align=center>" + value1 + "</td>";
+                    v_html += "<td align=center>" + value2 + "</td>";
+                    v_html += "<td align=center>" + value3 + "</td>";
+                    v_html += "<td align=center>" + value4 + "</td>";
+                    v_html += "<td align=center>" + value5 + "</td>";
+                    v_html += "<td align=center>" + value6 + "</td>";
+                    v_html += "<td align=center>" + value7 + "</td>";
+                    v_html += "<td align=center>" + value8 + "</td>";
+                    v_html += "<td align=center>" + value9 + "</td>";
+                    v_html += "<td align=center>" + value10 + "</td>";
+                    v_html += "<td align=center>" + value11 + "</td>";
+                    v_html += "<td align=center>" + value12 + "</td>";
+                    v_html += "<td align=center>" + value13 + "</td>";
+                    v_html += "</tr>";
+
+
+                });
+
+                v_html += '</tbody>';
+                v_html += '</table>';
+                v_html += '</div>';
+
+                $("#fault-list-monthly").html(v_html);
+
+            }
+
+            // faultList Open
+            $('#modal-fault-list').on('shown.bs.modal', function(e) {
+                var button = $(e.relatedTarget);
+                var v_fault_info_id = button.data('fault_info_id');
+                var v_month_info = button.data('month_info');
+                var v_region = button.data('region');
+
+
+                // get Data
+                $.ajax({
+                    type : "GET",
+                    url : "/web/admin/totalFaultByRegion/totalFaultByList/getFaultList",
+                    dataType : "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data : { monthInfo: v_month_info, faultInfoId : v_fault_info_id, region:v_region },
+                    success : function(data){
+                        set_modal_fault_list(data);
+                    }
+
+                });
+
+
+
+            });
+            // 장애등급 Close
+            $('#modal-fault-list').on('hidden.bs.modal', function(e) {
+                document.getElementById('modal-modal-fault-list').innerHTML =  "";
+            });
+
+            function set_modal_fault_list(faultList){
+
+                var fault_list_html = [];
+                fault_list_html.push('<table class="table table-bordered table-hover table-striped">');
+                fault_list_html.push('<thead><tr><th>등록일</th><th>월정보</th><th>시스템</th><th>지역</th><th>등급</th><th>설명</th></tr></thead>');
+                fault_list_html.push('<tbody>');
+
+                for (var i=0; i< faultList.length; i++) {
+                    fault_list_html.push('<tr>');
+                    fault_list_html.push('<td>' + faultList[i].registerDate +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].monthInfo +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].serviceName +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].region +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].grade +'</td>');
+                    fault_list_html.push('<td>' + faultList[i].comment +'</td>');
+                    fault_list_html.push('</tr>');
+                }
+                fault_list_html.push('</tbody>');
+                fault_list_html.push('</table>');
+                document.getElementById('modal-modal-fault-list').innerHTML =  fault_list_html.join("");
+            }
+
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

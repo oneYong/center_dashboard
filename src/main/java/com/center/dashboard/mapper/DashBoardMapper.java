@@ -1,6 +1,7 @@
 package com.center.dashboard.mapper;
 
 import com.center.dashboard.vo.BillingDataVO;
+import com.center.dashboard.vo.FaultDataVO;
 import com.center.dashboard.vo.TotalUserVO;
 import com.center.dashboard.vo.TotalDataVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -38,5 +39,16 @@ public interface DashBoardMapper {
     List<TotalUserVO> getServiceList_EIC(@Param("date") String date) throws Exception;
     List<TotalUserVO> getServiceList_RUC(@Param("date") String date) throws Exception;
 
+    // AWS TotalCost
     List<BillingDataVO> getAWSBillingTotalCost_CNS(@Param("dateList") List<String> dateList) throws Exception;
+
+    List<BillingDataVO> getAWSServiceList_CNS(@Param("date") String date) throws Exception;
+    List<BillingDataVO> getAWSProductList_CNS(@Param("date") String date) throws Exception;
+
+    List<BillingDataVO> getAWSMonthlyProductCost_CNS(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth) throws Exception;
+
+    List<FaultDataVO> getFaultCountByService(FaultDataVO faultDataVO) throws Exception;
+    List<FaultDataVO> getFaultCountByRegion(FaultDataVO faultDataVO) throws Exception;
+    List<FaultDataVO> getFaultList(FaultDataVO faultDataVO) throws Exception;
+    List<FaultDataVO> getFaultListMonthly(FaultDataVO faultDataVO) throws Exception;
 }

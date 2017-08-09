@@ -35,6 +35,7 @@ public class MakeChartServiceTest {
 
     @Test
     public void test_run() throws Exception{
-
+       // String labels = makeChartService.makeChartLabelsAWS(CmmDate.getLastDayList("201702","201707"));
+       // System.out.println(labels);
     }
 }

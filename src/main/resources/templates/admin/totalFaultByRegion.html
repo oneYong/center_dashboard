@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<div layout:fragment="content">
+    <th:block>
+        <style>
+            .progress {
+                position: relative;
+                height: 20px;
+            }
+            .progress > .progress-type {
+                position: absolute;
+                left: 0px;
+                font-weight: 800;
+                padding: 1px 10px 5px 10px;
+                color: black;
+
+            }
+            .progress > .progress-completed {
+                position: absolute;
+                right: 0px;
+                font-weight: 800;
+                padding: 1px 5px 2px;
+            }
+
+        </style>
+    </th:block>
+
+    <div id="page-wrapper">
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        장애 상세 현황  <small>(무장애 1일 이상일 경우)</small>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="totalFaultByGraph">
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        서비스별 장애 월별 현황
+                   </h1>
+                </div>
+            </div>
+
+            <!-- /.row -->
+            <div class="row">
+                <div id="totalFaultByList">
+                </div>
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var g_month_str = '';
+            var g_start_month = '';
+            var g_end_month = '';
+
+            $( document ).ready(function() {
+
+                initMonth();
+
+
+                $("#totalFaultByGraph").load("/web/admin/totalFaultByRegion/totalFaultByGraph?startMonth="+g_start_month+"&endMonth="+g_end_month,null, function() {
+                });
+                $("#totalFaultByList").load("/web/admin/totalFaultByRegion/totalFaultByList?startMonth="+g_start_month+"&endMonth="+g_end_month,null, function() {
+                });
+
+
+
+
+
+            });
+            function initMonth(){
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = now.getMonth()+1
+                for(var i = 13; i >= 1; i--){
+                    var now = new Date(year,month);
+                    now.setMonth(now.getMonth()-i);
+
+                    var yyyymm = now.getFullYear() +"-" + ((now.getMonth()+1) < 10 ? "0"+(now.getMonth()+1) : (now.getMonth()+1));
+
+
+                    if(i == 13){
+                        g_start_month = yyyymm;
+                    }
+
+                    if(i == 1){
+                        g_month_str += yyyymm;
+                        g_end_month = yyyymm;
+                    }else{
+                        g_month_str += yyyymm +",";
+                    }
+                }
+            }
+
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</div>
+
+
+</html>

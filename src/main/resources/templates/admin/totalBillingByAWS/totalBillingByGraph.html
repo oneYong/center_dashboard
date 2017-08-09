@@ -1,0 +1,224 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AWS 그래프</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <canvas id="aws-graph" height="310" width="500" ></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AWS Service 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="aws-graph-service-list" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AWS Product 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="aws-graph-product-list"></div>
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to array
+            var aws_graph_temp_label = [[${awsGraphLabel}]];
+            var aws_graph_label = new Array();
+            for(var i = 0; i < aws_graph_temp_label.split(",").length; i++){
+                aws_graph_label[i] = aws_graph_temp_label.split(",")[i];
+            }
+
+            var aws_graph_datasets = [[${awsGraphDatasets}]];
+
+            // to object
+            var aws_graph_service_list = JSON.parse([[${awsGraphServiceList}]]);
+            var aws_graph_product_list = JSON.parse([[${awsGraphProductList}]]);
+
+            var aws_graph_service_more_btn = '<button id="aws_graph_service_more_btn" onclick="aws_graph_full_service_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var aws_graph_full_service_more_btn = '<button id="aws_graph_full_service_more_btn" onclick="aws_graph_service_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var aws_graph_service_html = [];
+            var aws_graph_full_service_html = [];
+
+            var aws_graph_product_more_btn = '<button id="aws_graph_product_more_btn" onclick="aws_graph_full_product_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var aws_graph_full_product_more_btn = '<button id="aws_graph_full_product_more_btn" onclick="aws_graph_product_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var aws_graph_product_html = [];
+            var aws_graph_full_product_html = [];
+
+            initAwsGraphServiceList(aws_graph_service_list);
+            initAwsGraphProductList(aws_graph_product_list);
+
+            var aws_chart = new Chart(document.getElementById("aws-graph"), {
+                type: 'bar',
+                data: {
+                    labels: aws_graph_label,
+                    datasets: [{
+                        type: 'bar',
+                        label: 'AWS Billing Info(Bar)',
+                        data: aws_graph_datasets,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        borderColor: "#000"
+                    }, {
+                        type: 'line',
+                        label: 'AWS Billing Info(Line)',
+                        data: aws_graph_datasets,
+                        backgroundColor: "rgba(60,186,159,0.2)",
+                        borderColor: "rgba(60,186,159,1)",
+                        fill:false
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: "time",
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 7  },
+                            time: {
+                                unit: 'month',
+                                round: 'month',
+                                displayFormats: {
+                                    month: 'YYYY-MM'
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                                // OR //
+                                beginAtZero: true, // minimum value will be 0.
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+                                }
+                            }
+                        }]
+                    }
+                }
+            });
+
+            function initAwsGraphServiceList(serviceList){
+
+                aws_graph_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                aws_graph_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>Cost</th></tr></thead>');
+                aws_graph_service_html.push('<tbody>');
+
+                aws_graph_full_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                aws_graph_full_service_html.push('<thead> <tr><th>No</th><th>Name</th><th>Cost</th></tr></thead>');
+                aws_graph_full_service_html.push('<tbody>');
+
+                for (var i=0; i< serviceList.length; i++) {
+                    // full
+                    aws_graph_full_service_html.push('<tr>');
+                    aws_graph_full_service_html.push('<td>' + (i+1) +'</td>');
+                    aws_graph_full_service_html.push('<td class="chart-legend-label-text" >'
+
+                        + serviceList[i].tag +'</td>');
+                    aws_graph_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].totalCostStr+'</td>');
+                    aws_graph_full_service_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        aws_graph_service_html.push('<tr>');
+                        aws_graph_service_html.push('<td>' + (i+1) +'</td>');
+                        aws_graph_service_html.push('<td class="chart-legend-label-text" >'
+
+                            + serviceList[i].tag +'</td>');
+                        aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].totalCostStr+'</td>');
+                        aws_graph_service_html.push('</tr>');
+                    }
+
+                }
+
+                aws_graph_service_html.push('</tbody>');
+                aws_graph_service_html.push('</table>');
+                aws_graph_service_html.push(aws_graph_service_more_btn);
+
+                aws_graph_full_service_html.push('</tbody>');
+                aws_graph_full_service_html.push('</table>');
+                aws_graph_full_service_html.push(aws_graph_full_service_more_btn);
+
+                document.getElementById('aws-graph-service-list').innerHTML =  aws_graph_service_html.join("");
+            }
+
+            function aws_graph_service_more_view(){ // 줄이기
+                document.getElementById('aws-graph-service-list').innerHTML = aws_graph_service_html.join("");
+            }
+
+            function aws_graph_full_service_more_view(){ // 더보기
+                document.getElementById('aws-graph-service-list').innerHTML = aws_graph_full_service_html.join("");
+            }
+
+            function initAwsGraphProductList(productList){
+
+                aws_graph_product_html.push('<table class="table table-bordered table-hover table-striped">');
+                aws_graph_product_html.push('<thead> <tr><th>No</th><th>Name</th><th>Cost</th></tr></thead>');
+                aws_graph_product_html.push('<tbody>');
+
+                aws_graph_full_product_html.push('<table class="table table-bordered table-hover table-striped">');
+                aws_graph_full_product_html.push('<thead> <tr><th>No</th><th>Name</th><th>Cost</th></tr></thead>');
+                aws_graph_full_product_html.push('<tbody>');
+
+                for (var i=0; i< productList.length; i++) {
+                    // full
+                    aws_graph_full_product_html.push('<tr>');
+                    aws_graph_full_product_html.push('<td>' + (i+1) +'</td>');
+                    aws_graph_full_product_html.push('<td class="chart-legend-label-text" >'
+
+                        + productList[i].productCode +'</td>');
+                    aws_graph_full_product_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].totalCostStr+'</td>');
+                    aws_graph_full_product_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        aws_graph_product_html.push('<tr>');
+                        aws_graph_product_html.push('<td>' + (i+1) +'</td>');
+                        aws_graph_product_html.push('<td class="chart-legend-label-text" >'
+
+                            + productList[i].productCode +'</td>');
+                        aws_graph_product_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].totalCostStr+'</td>');
+                        aws_graph_product_html.push('</tr>');
+                    }
+
+                }
+
+                aws_graph_product_html.push('</tbody>');
+                aws_graph_product_html.push('</table>');
+                aws_graph_product_html.push(aws_graph_product_more_btn);
+
+                aws_graph_full_product_html.push('</tbody>');
+                aws_graph_full_product_html.push('</table>');
+                aws_graph_full_product_html.push(aws_graph_full_product_more_btn);
+
+                document.getElementById('aws-graph-product-list').innerHTML =  aws_graph_product_html.join("");
+            }
+
+            function aws_graph_product_more_view(){ // 줄이기
+                document.getElementById('aws-graph-product-list').innerHTML = aws_graph_product_html.join("");
+            }
+
+            function aws_graph_full_product_more_view(){ // 더보기
+                document.getElementById('aws-graph-product-list').innerHTML = aws_graph_full_product_html.join("");
+            }
+
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

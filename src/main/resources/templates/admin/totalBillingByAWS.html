@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="admin/layout">
+<div layout:fragment="content">
+    <th:block>
+        <style>
+
+        </style>
+    </th:block>
+
+    <div id="page-wrapper">
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        AWS Billing Info  <small>(최근 6달 동안의 월별 증감 수 그래프로 표현)</small>
+                    </h1>
+                </div>
+
+            </div>
+
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AWS Billing Graph 조회기간</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-inline" role="form">
+                                <label class="control-label">Start-Date :</label>
+                                <input class="form-control"  id="graphStartDate" type="text" style="width:80px" th:readonly="true" />
+                                <label class="control-label">~ End-Date :</label>
+                                <input class="form-control"  id="graphEndDate" type="text" style="width:80px" th:readonly="true" />
+                                <input onclick="reloadGraph()" type="button"  class="btn btn-primary " value="검색"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <!-- /.row -->
+            <div class="row">
+                <div id="totalBillingByGraph">
+                </div>
+            </div>
+            <!-- /.row -->
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> AWS Billing List 조회기간</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-inline" role="form">
+                                <label class="control-label">Start-Date :</label>
+                                <input class="form-control"  id="listStartDate" type="text" style="width:80px" th:readonly="true" />
+                                <label class="control-label">~ End-Date :</label>
+                                <input class="form-control"  id="listEndDate" type="text" style="width:80px" th:readonly="true" />
+                                <input onclick="reloadList()" type="button"  class="btn btn-primary " value="검색"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            <!-- /.row -->
+            <div class="row">
+                <div id="totalBillingByList">
+                </div>
+            </div>
+            <!-- /.row -->
+
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+            var g_start_date = [[${startDate}]];
+            var g_end_date = [[${endDate}]];
+
+            $( document ).ready(function() {
+                $('#graphStartDate').val(g_start_date);
+                $('#graphEndDate').val(g_end_date);
+
+                $('#listStartDate').val(g_end_date);
+                $('#listEndDate').val(g_end_date);
+
+
+
+                $("#totalBillingByGraph").load("/web/admin/totalBillingByAWS/totalBillingByGraph?startDate="+g_start_date+"&endDate="+g_end_date,null, function() {
+                });
+                $("#totalBillingByList").load("/web/admin/totalBillingByAWS/totalBillingByList?startDate="+g_end_date+"&endDate="+g_end_date,null, function() {
+                });
+
+
+                // datepicker 추가
+                $('#graphStartDate').datepicker({
+                    dateFormat: 'yymm',
+                    changeYear: true,
+                    changeMonth: true,
+                    onSelect: function(dateText, inst) {
+                        var toDate = $('#graphEndDate').val();
+                        if(dateText > toDate){
+                            $('#graphStartDate').val(g_start_date);
+                        }
+                    }
+                });
+
+                $('#graphEndDate').datepicker({
+                    dateFormat: 'yymm',
+                    changeYear: true,
+                    changeMonth: true,
+                    onSelect: function(dateText, inst) {
+                        var fromDate = $('#graphStartDate').val();
+                        if(dateText < fromDate){
+                            $('#graphEndDate').val(g_end_date);
+                        }
+                    }
+                });
+
+                // datepicker 추가
+                $('#listStartDate').datepicker({
+                    dateFormat: 'yymm',
+                    changeYear: true,
+                    changeMonth: true,
+                    onSelect: function(dateText, inst) {
+                        var toDate = $('#listEndDate').val();
+                        if(dateText > toDate){
+                            $('#listStartDate').val(g_end_date);
+                        }
+                    }
+                });
+
+                $('#listEndDate').datepicker({
+                    dateFormat: 'yymm',
+                    changeYear: true,
+                    changeMonth: true,
+                    onSelect: function(dateText, inst) {
+                        var fromDate = $('#listStartDate').val();
+                        if(dateText < fromDate){
+                            $('#listEndDate').val(g_end_date);
+                        }
+                    }
+                });
+
+
+
+            });
+
+            function reloadGraph(){
+                var start_date = $('#graphStartDate').val();
+                var end_date = $('#graphEndDate').val();
+                $("#totalBillingByGraph").load("/web/admin/totalBillingByAWS/totalBillingByGraph?startDate="+start_date+"&endDate="+end_date,null, function() {});
+
+            }
+
+            function reloadList(){
+                var start_date = $('#listStartDate').val();
+                var end_date = $('#listEndDate').val();
+                $("#totalBillingByList").load("/web/admin/totalBillingByAWS/totalBillingByList?startDate="+start_date+"&endDate="+end_date,null, function() {});
+
+            }
+
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</div>
+
+
+</html>

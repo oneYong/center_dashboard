@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.config.annotation.*;
+
+import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Created by WYKIM on 2017-06-19.
@@ -69,4 +74,5 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(){
         return new MappingJackson2HttpMessageConverter();
     }
+
 }

@@ -1,0 +1,83 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Monthly Product List</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <div id="aws-list"></div>
+        </div>
+    </div>
+</div>
+
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to object
+            var aws_list_monthly_product_list = JSON.parse([[${awsListMonthlyProductList}]]);
+
+
+            initAwsGraphServiceList(aws_list_monthly_product_list);
+
+
+            function initAwsGraphServiceList(productList){
+
+                var aws_graph_service_html = [];
+                aws_graph_service_html.push('<table class="table table-bordered table-hover table-striped">');
+                aws_graph_service_html.push('<thead> <tr>');
+
+                aws_graph_service_html.push('<th>No</th>');
+                aws_graph_service_html.push('<th>기준일자</th>');
+                aws_graph_service_html.push('<th>AmazonEC2</th>');
+                aws_graph_service_html.push('<th>AWSDataTransfer</th>');
+                aws_graph_service_html.push('<th>AmazonRDS</th>');
+                aws_graph_service_html.push('<th>AmazonS3</th>');
+                aws_graph_service_html.push('<th>AWSDatabaseMigrationSvc</th>');
+                aws_graph_service_html.push('<th>AmazonRoute53</th>');
+                //aws_graph_service_html.push('<th>AWSDirectConnect</th>');
+                //aws_graph_service_html.push('<th>AmazonVPC</th>');
+                //aws_graph_service_html.push('<th>AmazonCloudWatch');
+                //aws_graph_service_html.push('<th>AWSCloudTrail</th>');
+                //aws_graph_service_html.push('<th>awskms</th>');
+                aws_graph_service_html.push('<th>-1 Day Rate</th>');
+                aws_graph_service_html.push('<th>Total Cost</th>');
+                aws_graph_service_html.push('</tr></thead>');
+                aws_graph_service_html.push('<tbody>');
+
+                for (var i=0; i< productList.length; i++) {
+
+                    aws_graph_service_html.push('<tr>');
+                    aws_graph_service_html.push('<td>' + (i+1) +'</td>');
+                    aws_graph_service_html.push('<td class="chart-legend-label-text" >'
+
+                        + productList[i].totalDate +'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].ec2+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dt+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].rds+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].s3+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dms+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].r53+'</td>');
+                    //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dc+'</td>');
+                    //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].vpc+'</td>');
+                    //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].cw+'</td>');
+                    //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].ct+'</td>');
+                    //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].kms+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].beforeCostExtraStr+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].totalCostStr+'</td>');
+                    aws_graph_service_html.push('</tr>');
+
+                }
+
+                aws_graph_service_html.push('</tbody>');
+                aws_graph_service_html.push('</table>');
+
+                document.getElementById('aws-list').innerHTML =  aws_graph_service_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

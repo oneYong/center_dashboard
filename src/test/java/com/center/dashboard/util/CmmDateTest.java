@@ -30,8 +30,16 @@ public class CmmDateTest {
         System.out.println(CmmDate.getLastDayOneMonth(2));
         System.out.println(CmmDate.getStartEndDay(CmmDate.getLastDayList().get(0)));
 
-        System.out.println(CmmDate.getBeforeYearMonth("201707",1));
-        System.out.println(CmmDate.getLastDayList("201706","201705"));
+        System.out.println(CmmDate.getBeforeYearMonth("201708",5));
+
+        String yesterDay = CmmDate.getYesterdayGMTDate().substring(0,6);
+        String endDate = yesterDay.substring(0,4) +"-" + yesterDay.substring(4,6);
+        String startDate = CmmDate.getBeforeYearMonth(yesterDay,5).substring(0,6);
+        startDate = startDate.substring(0,4) +"-" + startDate.substring(4,6);
+        System.out.println(startDate + "/" +endDate);
+        System.out.println(CmmDate.getLastDayList("201602","201708"));
+
+        System.out.println(CmmDate.getBeforeYearMonth(6));
 
     }
 }

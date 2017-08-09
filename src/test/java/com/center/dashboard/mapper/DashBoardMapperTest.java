@@ -1,7 +1,9 @@
 package com.center.dashboard.mapper;
 
 import com.center.dashboard.util.CmmDate;
+import com.center.dashboard.util.CmmUtils;
 import com.center.dashboard.vo.BillingDataVO;
+import com.center.dashboard.vo.FaultDataVO;
 import com.center.dashboard.vo.TotalUserVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +87,86 @@ public class DashBoardMapperTest {
 
         List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList());
         System.out.println(billingDataVOList);
+    }
+
+    @Test
+    public void test_getServiceProductList_CNS() throws Exception{
+
+        List<BillingDataVO> productListCns = dashBoardMapper.getAWSProductList_CNS("2017-07-31");
+        List<BillingDataVO> serviceListCns = dashBoardMapper.getAWSServiceList_CNS("2017-07-31");
+
+        for(int i = 0; i < productListCns.size(); i++){
+            BillingDataVO billingDataVO = productListCns.get(i);
+            billingDataVO.setTotalCostStr(CmmUtils.doubleToMoneyString(billingDataVO.getTotalCost()));
+        }
+
+        for(int i = 0; i < serviceListCns.size(); i++){
+            BillingDataVO billingDataVO = serviceListCns.get(i);
+            billingDataVO.setTotalCostStr(CmmUtils.doubleToMoneyString(billingDataVO.getTotalCost()));
+        }
+        System.out.println(productListCns);
+        System.out.println(serviceListCns);
+    }
+
+    @Test
+    public void test_getAWSMonthlyProductCost_CNS() throws Exception{
+        List<BillingDataVO> list = dashBoardMapper.getAWSMonthlyProductCost_CNS("201707","201708");
+        for(int i = 0; i < list.size(); i++){
+            BillingDataVO billingDataVO = list.get(i);
+            billingDataVO.setTotalCostStr(CmmUtils.doubleToMoneyString(billingDataVO.getTotalCost()));
+            billingDataVO.setBeforeCostExtraStr(CmmUtils.doubleToMoneyString(billingDataVO.getBeforeCostExtra()));
+        }
+
+        System.out.println(list);
+    }
+
+    @Test
+    public void test_getFault1() throws Exception{
+        FaultDataVO faultDataVO = new FaultDataVO();
+        faultDataVO.setMonthInfo("2017-08");
+        List<FaultDataVO> list1 = dashBoardMapper.getFaultCountByService(faultDataVO);
+        List<FaultDataVO> list2 = dashBoardMapper.getFaultCountByRegion(faultDataVO);
+        System.out.println(list1);
+        System.out.println(list2);
+    }
+
+    @Test
+    public void test_getFault2() throws Exception{
+        FaultDataVO faultDataVO = new FaultDataVO();
+        List<FaultDataVO> list1 = dashBoardMapper.getFaultList(faultDataVO);
+
+
+        FaultDataVO faultDataVO2 = new FaultDataVO();
+        faultDataVO2.setMonthInfo("2017-08");
+        List<FaultDataVO> list2 = dashBoardMapper.getFaultList(faultDataVO2);
+
+        FaultDataVO faultDataVO3 = new FaultDataVO();
+        faultDataVO3.setFaultInfoId(14);
+        List<FaultDataVO> list3 = dashBoardMapper.getFaultList(faultDataVO3);
+
+
+        FaultDataVO faultDataVO4 = new FaultDataVO();
+        faultDataVO4.setRegion("RUC");
+        List<FaultDataVO> list4 = dashBoardMapper.getFaultList(faultDataVO4);
+
+        System.out.println(list1);
+        System.out.println(list2);
+        System.out.println(list3);
+        System.out.println(list4);
+
+    }
+
+    @Test
+    public void test_getFault3() throws Exception{
+        FaultDataVO faultDataVO = new FaultDataVO();
+        faultDataVO.setStartMonth("2016-08");
+        faultDataVO.setEndMonth("2017-08");
+        List<FaultDataVO> list1 = dashBoardMapper.getFaultListMonthly(faultDataVO);
+
+
+        System.out.println(list1);
+
+
     }
 
 }

@@ -191,7 +191,7 @@
     <select id="getAWSBillingTotalCost_CNS" parameterType="list" resultType="billingDataVO" >
 
             select total_date as totalDate
-                  ,sum(total_cost) as totalCost
+                  ,truncate(sum(total_cost),2) as totalCost
               from sbc_aws_account_billinginfo
              where total_date in
                      <foreach collection="dateList" item="item" separator=","
@@ -202,5 +202,198 @@
 
 
     </select>
+
+    <select id="getAWSServiceList_CNS" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+            select if(tag = '','N/A',tag) as tag
+                  ,truncate(sum(total_cost),2) as totalCost
+              from sbc_aws_account_billinginfo
+             where total_date = #{date}
+              group by tag order by totalCost desc;
+
+        ]]>
+    </select>
+
+    <select id="getAWSProductList_CNS" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+            select product_code as productCode
+                  ,product_name as productName
+                  ,truncate(sum(total_cost),2) as totalCost
+              from sbc_aws_account_billinginfo
+             where total_date = #{date}
+             group by product_code order by totalCost desc;
+
+        ]]>
+    </select>
+
+    <select id="getAWSMonthlyProductCost_CNS" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+            SELECT  B.total_date as totalDate
+	      		,truncate(SUM(CASE WHEN B.product_code = 'AmazonEC2' THEN B.total_cost END),2) AS 'ec2'
+				,truncate(SUM(CASE WHEN B.product_code = 'AWSDataTransfer' THEN B.total_cost END),2) AS 'dt'
+		        ,truncate(SUM(CASE WHEN B.product_code = 'AmazonRDS' THEN B.total_cost END),2) AS 'rds'
+				,truncate(SUM(CASE WHEN B.product_code = 'AmazonS3' THEN B.total_cost END),2) AS 's3'
+				,truncate(SUM(CASE WHEN B.product_code = 'AWSDatabaseMigrationSvc' THEN B.total_cost END),2) AS 'dms'
+				,truncate(SUM(CASE WHEN B.product_code = 'AmazonRoute53' THEN B.total_cost END),2) AS 'r53'
+		        ,truncate(SUM(CASE WHEN B.product_code = 'AWSDirectConnect' THEN B.total_cost END),2) AS 'dc'
+		        ,truncate(SUM(CASE WHEN B.product_code = 'AmazonVPC' THEN B.total_cost END),2) AS 'vpc'
+		        ,truncate(SUM(CASE WHEN B.product_code = 'AmazonCloudWatch' THEN B.total_cost END),2) AS 'cw'
+		        ,truncate(SUM(CASE WHEN B.product_code = 'AWSCloudTrail' THEN B.total_cost END),2) AS 'ct'
+				,truncate(SUM(CASE WHEN B.product_code = 'awskms' THEN B.total_cost END),2) AS 'kms'
+		        ,truncate(SUM(B.before_cost_extra),2) AS 'beforeCostExtra'
+		        ,truncate(SUM(B.total_cost),2) AS 'totalCost'
+			FROM sbc_aws_account_billinginfo_total B
+		   WHERE B.register_date >=  CONCAT(#{startMonth},'02') AND B.register_date < CONCAT(period_add(#{endMonth},1),'02')
+		 GROUP BY B.total_date
+		ORDER BY B.register_date desc
+
+        ]]>
+    </select>
+
+    <select id="getFaultCountByService" parameterType="faultDataVO" resultType="faultDataVO" >
+        <![CDATA[
+            SELECT A.faultinfo_id as faultInfoId
+                   ,A.service_name as serviceName
+                   ,A.region as region
+                   ,A.description as description
+                   ,A.register_date as registerDate
+                   ,COUNT(B.month_info) as faultCount
+             FROM sbc_faultinfo A
+            LEFT OUTER JOIN (select * from sbc_faultinfo_detail x where x.month_info=#{monthInfo}) B
+                 ON A.faultinfo_id = B.faultinfo_id
+             GROUP BY A.service_name
+             ORDER BY A.faultinfo_id;
+
+        ]]>
+    </select>
+
+    <select id="getFaultCountByRegion" parameterType="faultDataVO" resultType="faultDataVO" >
+        <![CDATA[
+            SELECT  C.region as region
+                   ,sum(C.faultCount) as faultCount
+              FROM
+              (
+            SELECT A.faultinfo_id as faultInfoId
+                   ,A.service_name as serviceName
+                   ,A.region as region
+                   ,A.description as description
+                   ,A.register_date as registerDate
+                   ,COUNT(B.month_info) as faultCount
+             FROM sbc_faultinfo A
+            LEFT OUTER JOIN (select * from sbc_faultinfo_detail x where x.month_info=#{monthInfo}) B
+                 ON A.faultinfo_id = B.faultinfo_id
+             GROUP BY A.service_name
+             ORDER BY A.faultinfo_id
+              ) C GROUP BY C.region;
+
+        ]]>
+    </select>
+
+    <select id="getFaultList" parameterType="faultDataVO" resultType="faultDataVO" >
+                SELECT A.service_name as serviceName
+                       ,A.region as region
+                       ,B.grade as grade
+                       ,B.month_info as monthInfo
+                       ,B.faultinfo_minute as faultMinute
+                       ,B.comment as comment
+                       ,B.register_date as registerDate
+                  FROM sbc_faultinfo A, sbc_faultinfo_detail B
+                 WHERE A.faultinfo_id = B.faultinfo_id
+                    <if test="faultInfoId != 0">
+                        AND A.faultinfo_id = #{faultInfoId}
+                    </if>
+                    <if test="monthInfo != null and monthInfo != ''">
+                        AND B.month_info = #{monthInfo}
+                    </if>
+                    <if test="region != null and region != ''">
+                        AND A.region = #{region}
+                    </if>
+                ORDER BY registerDate desc;
+
+    </select>
+
+    <select id="getFaultListMonthly" parameterType="faultDataVO" resultType="faultDataVO" >
+        <![CDATA[
+			SELECT A.faultinfo_id AS faultInfoId
+			       ,A.service_name AS serviceName
+			       ,A.description
+			       ,A.region
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month1 ) AS monthCnt1
+				     ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month1 ),0) AS monthMinute1
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month2 ) AS monthCnt2
+					   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month2 ),0) AS monthMinute2
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month3 ) AS monthCnt3
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month3 ),0) AS monthMinute3
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month4 ) AS monthCnt4
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month4 ),0) AS monthMinute4
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month5 ) AS monthCnt5
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month5 ),0) AS monthMinute5
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month6 ) AS monthCnt6
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month6 ),0) AS monthMinute6
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month7 ) AS monthCnt7
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month7 ),0) AS monthMinute7
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month8 ) AS monthCnt8
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month8 ),0) AS monthMinute8
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month9 ) AS monthCnt9
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month9 ),0) AS monthMinute9
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month10 ) AS monthCnt10
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month10 ),0) AS monthMinute10
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month11 ) AS monthCnt11
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month11 ),0) AS monthMinute11
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month12 ) AS monthCnt12
+						   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month12 ),0) AS monthMinute12
+			       ,(SELECT COUNT(*) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month13 ) AS monthCnt13
+					   ,IFNULL((SELECT SUM(x.faultinfo_minute) FROM sbc_faultinfo_detail x where x.faultinfo_id = A.faultinfo_id and x.month_info = B.month13 ),0) AS monthMinute13
+			  FROM sbc_faultinfo A, (
+			SELECT MAX(A.month1) AS month1 ,MAX(A.month2) AS month2 ,MAX(A.month3) AS month3,MAX(A.month4) AS month4 ,MAX(A.month5) AS month5
+			       ,MAX(A.month6) AS month6 ,MAX(A.month7) AS month7 ,MAX(A.month8) AS month8 ,MAX(A.month9) AS month9 ,MAX(A.month10) AS month10
+			       ,MAX(A.month11) AS month11 ,MAX(A.month12) AS month12 ,MAX(A.month13) AS month13
+			  FROM (
+				SELECT
+					CASE WHEN A.row_num = 1
+						THEN A.month_info END AS month1,
+					CASE WHEN A.row_num = 2
+						THEN A.month_info END AS month2,
+					CASE WHEN A.row_num = 3
+						THEN A.month_info END AS month3,
+					CASE WHEN A.row_num = 4
+						THEN A.month_info END AS month4,
+					CASE WHEN A.row_num = 5
+						THEN A.month_info END AS month5,
+					CASE WHEN A.row_num = 6
+						THEN A.month_info END AS month6,
+					CASE WHEN A.row_num = 7
+						THEN A.month_info END AS month7,
+					CASE WHEN A.row_num = 8
+						THEN A.month_info END AS month8,
+					CASE WHEN A.row_num = 9
+						THEN A.month_info END AS month9,
+					CASE WHEN A.row_num = 10
+						THEN A.month_info END AS month10,
+					CASE WHEN A.row_num = 11
+						THEN A.month_info END AS month11,
+					CASE WHEN A.row_num = 12
+						THEN A.month_info END AS month12,
+					CASE WHEN A.row_num = 13
+						THEN A.month_info END AS month13
+				FROM (
+							 SELECT
+								 X.month_info           AS month_info,
+								 @rownum := @rownum + 1 AS row_num
+							 FROM (
+											SELECT substr(d, 1, 7) AS month_info
+											FROM sbc_date_table
+											WHERE substr(d, 1, 7) >= #{startMonth}
+														AND substr(d, 1, 7) <= #{endMonth}
+											GROUP BY substr(d, 1, 7)
+										) X, (SELECT @rownum := 0) Y
+						 ) A
+			) A
+					) B
+					ORDER BY A.region;
+			]]>
+
+    </select>
+
 
 </mapper>

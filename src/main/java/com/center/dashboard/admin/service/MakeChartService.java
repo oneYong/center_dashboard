@@ -35,6 +35,7 @@ public class MakeChartService {
         return tempLabels;
     }
 
+
     public String makeChartDatasets(List<String> dateList, List<String> cntryCodeList,
                                   List<TotalUserVO> totalUserList, String[] colorList){
 

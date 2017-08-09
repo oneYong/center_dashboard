@@ -21,5 +21,6 @@
 		<typeAlias alias="totalDataVO" type="com.center.dashboard.vo.TotalDataVO" />
 		<typeAlias alias="totalUserVO" type="com.center.dashboard.vo.TotalUserVO" />
 		<typeAlias alias="billingDataVO" type="com.center.dashboard.vo.BillingDataVO" />
+		<typeAlias alias="faultDataVO" type="com.center.dashboard.vo.FaultDataVO" />
 	</typeAliases>
 </configuration>

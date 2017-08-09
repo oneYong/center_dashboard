@@ -1,6 +1,7 @@
 package com.center.dashboard.admin.service;
 
 import com.center.dashboard.mapper.DashBoardMapper;
+import com.center.dashboard.util.CmmUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,17 @@ public class AWSBillingServiceTest {
     @Test
     public void test_getBeforeMonth() throws Exception {
         System.out.println(awsBillingService.getBeforeMonth(7));
+    }
+
+    @Test
+    public void test() throws Exception {
+        System.out.println(awsBillingService.getTotalCostList("201702","201707"));
+
+    }
+
+    @Test
+    public void test_productServiceList() throws Exception {
+        System.out.println(CmmUtils.getListToJson(awsBillingService.getProductList("2017-07-31")));
+        System.out.println(CmmUtils.getListToJson(awsBillingService.getServiceList("2017-07-31")));
     }
 }
