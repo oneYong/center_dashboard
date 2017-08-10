@@ -1,5 +1,6 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
 <div class="col-lg-6">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -200,12 +201,16 @@
                 kic_full_service_html.push('<tbody>');
 
                 for (var i=0; i< serviceList.length; i++) {
+                    var service_name = serviceList[i].svcName;
+                    if(serviceList[i].svcName == "LG Smart World"){
+                        service_name = "SDP";
+                    }
                     // full
                     kic_full_service_html.push('<tr>');
                     kic_full_service_html.push('<td>' + (i+1) +'</td>');
                     kic_full_service_html.push('<td class="chart-legend-label-text" >'
 
-                        + serviceList[i].svcName +'</td>');
+                        + service_name +'</td>');
                     kic_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
                     kic_full_service_html.push('</tr>');
 
@@ -215,7 +220,7 @@
                         kic_service_html.push('<td>' + (i+1) +'</td>');
                         kic_service_html.push('<td class="chart-legend-label-text" >'
 
-                            + serviceList[i].svcName +'</td>');
+                            + service_name +'</td>');
                         kic_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
                         kic_service_html.push('</tr>');
                     }

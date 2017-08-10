@@ -123,12 +123,16 @@
                 aws_graph_full_service_html.push('<tbody>');
 
                 for (var i=0; i< serviceList.length; i++) {
+                    var service_name = serviceList[i].tag;
+                    if(serviceList[i].tag == "N/A"){
+                        service_name = "공통";
+                    }
                     // full
                     aws_graph_full_service_html.push('<tr>');
                     aws_graph_full_service_html.push('<td>' + (i+1) +'</td>');
                     aws_graph_full_service_html.push('<td class="chart-legend-label-text" >'
 
-                        + serviceList[i].tag +'</td>');
+                        + service_name +'</td>');
                     aws_graph_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].totalCostStr+'</td>');
                     aws_graph_full_service_html.push('</tr>');
 
@@ -138,7 +142,7 @@
                         aws_graph_service_html.push('<td>' + (i+1) +'</td>');
                         aws_graph_service_html.push('<td class="chart-legend-label-text" >'
 
-                            + serviceList[i].tag +'</td>');
+                            + service_name +'</td>');
                         aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].totalCostStr+'</td>');
                         aws_graph_service_html.push('</tr>');
                     }

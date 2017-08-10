@@ -51,4 +51,7 @@ public interface DashBoardMapper {
     List<FaultDataVO> getFaultCountByRegion(FaultDataVO faultDataVO) throws Exception;
     List<FaultDataVO> getFaultList(FaultDataVO faultDataVO) throws Exception;
     List<FaultDataVO> getFaultListMonthly(FaultDataVO faultDataVO) throws Exception;
+
+    // 장애 차이.(장애 등록일로 부터 오늘까지의 차이)
+    Integer getFaultDayDiff() throws Exception;
 }

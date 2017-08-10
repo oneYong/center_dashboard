@@ -1,4 +1,12 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(http://fonts.googleapis.com/css?family=Ruda:400,700,900);
+body {
+    color: #797979;
+    background: #f2f2f2;
+    font-family: 'Ruda', sans-serif;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size:14px;
+}
 
 .login-page {
     width: 360px;

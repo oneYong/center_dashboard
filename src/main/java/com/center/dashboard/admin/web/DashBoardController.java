@@ -97,6 +97,8 @@ public class DashBoardController {
 
     @RequestMapping(value="/dashboard/totalFault", method = RequestMethod.GET)
     public String totalFault(Model model) throws Exception{
+        int faultDayDiff =  dashBoardMapper.getFaultDayDiff();
+        model.addAttribute("faultDayDiff",faultDayDiff);
         return "admin/dashboard/totalFault";
     }
 
@@ -287,8 +289,9 @@ public class DashBoardController {
             FaultDataVO temp = list.get(i);
             faultTotalCount += temp.getFaultCount();
         }
+        int faultDayDiff =  dashBoardMapper.getFaultDayDiff();
 
-
+        model.addAttribute("faultDayDiff",faultDayDiff);
         model.addAttribute("standardDate",standardDate);
         model.addAttribute("standardMonth",standardMonth);
         model.addAttribute("faultList", CmmUtils.getListToJson(dashBoardMapper.getFaultList(new FaultDataVO())));

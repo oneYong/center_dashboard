@@ -396,4 +396,13 @@
     </select>
 
 
+    <select id="getFaultDayDiff"  resultType="Integer" >
+        <![CDATA[
+              select datediff(register_date,now()) * -1 as fault_diff
+                from sbc_faultinfo_detail
+            order by register_date desc LIMIT 1;
+			]]>
+
+    </select>
+
 </mapper>

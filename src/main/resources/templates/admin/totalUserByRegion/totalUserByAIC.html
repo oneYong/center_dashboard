@@ -200,12 +200,16 @@
                 aic_full_service_html.push('<tbody>');
 
                 for (var i=0; i< serviceList.length; i++) {
+                    var service_name = serviceList[i].svcName;
+                    if(serviceList[i].svcName == "LG Smart World"){
+                        service_name = "SDP";
+                    }
                     // full
                     aic_full_service_html.push('<tr>');
                     aic_full_service_html.push('<td>' + (i+1) +'</td>');
                     aic_full_service_html.push('<td class="chart-legend-label-text" >'
 
-                        + serviceList[i].svcName +'</td>');
+                        + service_name +'</td>');
                     aic_full_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
                     aic_full_service_html.push('</tr>');
 
@@ -215,7 +219,7 @@
                         aic_service_html.push('<td>' + (i+1) +'</td>');
                         aic_service_html.push('<td class="chart-legend-label-text" >'
 
-                            + serviceList[i].svcName +'</td>');
+                            + service_name +'</td>');
                         aic_service_html.push('<td align="right"  class="chart-legend-label-text">'+serviceList[i].tCnt.format()+'</td>');
                         aic_service_html.push('</tr>');
                     }

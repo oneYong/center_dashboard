@@ -8,11 +8,11 @@
         <div class="panel-body" style="overflow: hidden;">
             <div style="float:left;padding-left: 30px;width:250px;">
                 <span class="glyphicon glyphicon-flag" style="font-size:160px;color:#c1c1c1;padding: 0px 0 0 10px;position: relative;"></span>
-                <span style="font-size:40px;position: absolute;top:90px;left: 130px;">22일</span>
+                <span style="font-size:40px;position: absolute;top:90px;left: 130px;"><th:block th:text="${faultDayDiff}"></th:block>일</span>
             </div>
             <div style="display:inline-block;top:50px;">
                 <span style="font-size:20px;padding: 0px 10 0 10px;"></span><br/>
-                <span style="font-size:50px;padding: 0px 10 0 10px;">무장애 22일 째!</span><br/>
+                <span style="font-size:50px;padding: 0px 10 0 10px;">무장애 <th:block th:text="${faultDayDiff}"></th:block>일 째!</span><br/>
                 <span style="font-size:20px;padding: 0px 0 0 10px;">시스템이 잘 관리되고 있습니다!</span>
             </div>
             <div style="">
@@ -40,7 +40,7 @@
 
                 <div class="panel-title" style="text-align: center;margin-top:50px;margin-bottom: 10px;">
                     <span style="font-size: 40px;">
-                                            전체 장애 건수
+                                            <div id="this-month" style="display:inline-block"></div>월 장애 건수
                     </span>
                 </div>
                 <div id="fault-total-count"></div>
@@ -155,6 +155,10 @@
                 fault_total_count_html.push(fault_total_count);
                 fault_total_count_html.push('</span></div></a>');
                 document.getElementById('fault-total-count').innerHTML =  fault_total_count_html.join("");
+
+                // this month set
+                document.getElementById('this-month').innerHTML = fault_standard_month.substr(5,7) ;
+
             }
 
             /*]]>*/
