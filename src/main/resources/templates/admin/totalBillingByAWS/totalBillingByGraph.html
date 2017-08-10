@@ -38,6 +38,7 @@
 
             // to array
             var aws_graph_temp_label = [[${awsGraphLabel}]];
+
             var aws_graph_label = new Array();
             for(var i = 0; i < aws_graph_temp_label.split(",").length; i++){
                 aws_graph_label[i] = aws_graph_temp_label.split(",")[i];
@@ -61,7 +62,7 @@
 
             initAwsGraphServiceList(aws_graph_service_list);
             initAwsGraphProductList(aws_graph_product_list);
-
+            console.log(aws_graph_label);
             var aws_chart = new Chart(document.getElementById("aws-graph"), {
                 type: 'bar',
                 data: {

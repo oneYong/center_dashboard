@@ -27,9 +27,9 @@ public class MakeChartService {
         for(int i = 0; i < size; i++){
             String date = dateList.get(i);
             if(i == 0){
-                tempLabels = getDateAddComma(date);
+                tempLabels = date;
             }else{
-                tempLabels += "," + getDateAddComma(date);
+                tempLabels += "," + date;
             }
         }
         return tempLabels;

@@ -50,9 +50,9 @@ public class AWSBillingService {
             list.add(billingDataVO.getTotalCost());
 
             if(i == billingDataVOList.size()-1){
-                tempLabels = getDateAddCommaAWS(billingDataVO.getTotalDate());
+                tempLabels = billingDataVO.getTotalDate();
             }else{
-                tempLabels += "," + getDateAddCommaAWS(billingDataVO.getTotalDate());
+                tempLabels += "," + billingDataVO.getTotalDate();
             }
         }
         chartLabels = tempLabels;
