@@ -53,19 +53,24 @@
                     aws_graph_service_html.push('<td class="chart-legend-label-text" >'
 
                         + productList[i].totalDate +'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].ec2+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dt+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].rds+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].s3+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dms+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].r53+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].ec2+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].dt+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].rds+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].s3+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].dms+'</td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">$ '+productList[i].r53+'</td>');
                     //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].dc+'</td>');
                     //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].vpc+'</td>');
                     //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].cw+'</td>');
                     //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].ct+'</td>');
                     //aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].kms+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].beforeCostExtraStr+'</td>');
-                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text">'+productList[i].totalCostStr+'</td>');
+                    if(parseInt(productList[i].beforeCostExtraStr.split(" ")[1]) > 0)
+                        aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">'+productList[i].beforeCostExtraStr+' ↑ </td>');
+                    else if(parseInt(productList[i].beforeCostExtraStr.split(" ")[1]) == 0)
+                        aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" > null </td>');
+                    else
+                        aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#3584BB;">'+productList[i].beforeCostExtraStr+' ↓ </td>');
+                    aws_graph_service_html.push('<td align="right"  class="chart-legend-label-text" style="color:#D57070;">'+productList[i].totalCostStr+'</td>');
                     aws_graph_service_html.push('</tr>');
 
                 }
