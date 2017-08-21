@@ -138,39 +138,108 @@
 
     <select id="getServiceList_KIC" parameterType="String" resultType="totalUserVO" >
         <![CDATA[
-            select svc_code as svcCode
-                  ,svc_name as svcName
-                  ,sum(tcnt) as tCnt
-              from sbc_kic_user
-             where crt_date = #{date}
-          group by svc_code
-          order by tCnt desc;
+             select TEMP.svcCode as svcCode
+                   ,TEMP.svcName as svcName
+                   ,TEMP.tCnt as tCnt
+              from
+              (
+              SELECT
+                svc_code  AS svcCode,
+                svc_name  AS svcName,
+                sum(tcnt) AS tCnt
+              FROM sbc_kic_user
+              WHERE crt_date = #{date}
+                    AND svc_code NOT IN ('SVC001', 'SVC201', 'SVC202', 'SVC302', 'SVC411', 'SVC501', 'SVC605', 'SVC710', 'SVC716')
+              GROUP BY svc_code
+              UNION ALL
+              SELECT
+                'SVCNEW'    AS svcCode,
+                'SmartThinQ'        AS svcName,
+                sum(X.tCnt) AS tCnt
+              FROM
+                (
+                  SELECT
+                    svc_code  AS svcCode,
+                    svc_name  AS svcName,
+                    sum(tcnt) AS tCnt
+                  FROM sbc_kic_user
+                  WHERE crt_date = #{date}
+                        AND svc_code IN ('SVC201', 'SVC202')
+                  GROUP BY svc_code) X
+            ) TEMP
+            ORDER BY TEMP.tCnt desc;
 
         ]]>
     </select>
 
     <select id="getServiceList_AIC" parameterType="String" resultType="totalUserVO" >
         <![CDATA[
-            select svc_code as svcCode
-                  ,svc_name as svcName
-                  ,sum(tcnt) as tCnt
-              from sbc_aic_user
-             where crt_date = #{date}
-          group by svc_code
-          order by tCnt desc;
+            select TEMP.svcCode as svcCode
+                   ,TEMP.svcName as svcName
+                   ,TEMP.tCnt as tCnt
+              from
+              (
+              SELECT
+                svc_code  AS svcCode,
+                svc_name  AS svcName,
+                sum(tcnt) AS tCnt
+              FROM sbc_aic_user
+              WHERE crt_date = #{date}
+                    AND svc_code NOT IN ('SVC001', 'SVC201', 'SVC202', 'SVC302', 'SVC710', 'SVC716')
+              GROUP BY svc_code
+              UNION ALL
+              SELECT
+                'SVCNEW'    AS svcCode,
+                'SmartThinQ'        AS svcName,
+                sum(X.tCnt) AS tCnt
+              FROM
+                (
+                  SELECT
+                    svc_code  AS svcCode,
+                    svc_name  AS svcName,
+                    sum(tcnt) AS tCnt
+                  FROM sbc_aic_user
+                  WHERE crt_date = #{date}
+                        AND svc_code IN ('SVC201', 'SVC202')
+                  GROUP BY svc_code) X
+            ) TEMP
+            ORDER BY TEMP.tCnt desc;
 
         ]]>
     </select>
 
     <select id="getServiceList_EIC" parameterType="String" resultType="totalUserVO" >
         <![CDATA[
-            select svc_code as svcCode
-                  ,svc_name as svcName
-                  ,sum(tcnt) as tCnt
-              from sbc_eic_user
-             where crt_date = #{date}
-          group by svc_code
-          order by tCnt desc;
+            select TEMP.svcCode as svcCode
+                   ,TEMP.svcName as svcName
+                   ,TEMP.tCnt as tCnt
+              from
+              (
+              SELECT
+                svc_code  AS svcCode,
+                svc_name  AS svcName,
+                sum(tcnt) AS tCnt
+              FROM sbc_eic_user
+              WHERE crt_date = #{date}
+                    AND svc_code NOT IN ('SVC001', 'SVC201', 'SVC202', 'SVC302', 'SVC710')
+              GROUP BY svc_code
+              UNION ALL
+              SELECT
+                'SVCNEW'    AS svcCode,
+                'SmartThinQ'        AS svcName,
+                sum(X.tCnt) AS tCnt
+              FROM
+                (
+                  SELECT
+                    svc_code  AS svcCode,
+                    svc_name  AS svcName,
+                    sum(tcnt) AS tCnt
+                  FROM sbc_eic_user
+                  WHERE crt_date = #{date}
+                        AND svc_code IN ('SVC201', 'SVC202')
+                  GROUP BY svc_code) X
+            ) TEMP
+            ORDER BY TEMP.tCnt desc;
 
         ]]>
     </select>
