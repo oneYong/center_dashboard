@@ -41,11 +41,15 @@ public interface DashBoardMapper {
 
     // AWS TotalCost
     List<BillingDataVO> getAWSBillingTotalCost_CNS(@Param("dateList") List<String> dateList) throws Exception;
+    List<BillingDataVO> getAWSBillingTotalCost_TOTAL(@Param("dateList") List<String> dateList) throws Exception;
 
     List<BillingDataVO> getAWSServiceList_CNS(@Param("date") String date) throws Exception;
+    List<BillingDataVO> getAWSServiceList_TOTAL(@Param("date") String date) throws Exception;
     List<BillingDataVO> getAWSProductList_CNS(@Param("date") String date) throws Exception;
+    List<BillingDataVO> getAWSProductList_TOTAL(@Param("date") String date) throws Exception;
 
     List<BillingDataVO> getAWSMonthlyProductCost_CNS(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth) throws Exception;
+    List<BillingDataVO> getAWSMonthlyProductCost_TOTAL(@Param("startMonth") String startMonth, @Param("endMonth") String endMonth) throws Exception;
 
     List<FaultDataVO> getFaultCountByService(FaultDataVO faultDataVO) throws Exception;
     List<FaultDataVO> getFaultCountByRegion(FaultDataVO faultDataVO) throws Exception;

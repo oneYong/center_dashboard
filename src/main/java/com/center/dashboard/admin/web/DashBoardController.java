@@ -105,7 +105,7 @@ public class DashBoardController {
     @RequestMapping(value="/totalUserByRegion", method = RequestMethod.GET)
     public String totalUserByRegion(Model model, HttpSession session, HttpServletRequest request){
         String user_id = (String) request.getSession().getAttribute("user_id");
-        String defaultStartDate = CmmDate.getAWeeksAgoGMTDate();
+        String defaultStartDate = CmmDate.getBeforeYearMonth(2);
         String defaultEndDate = CmmDate.getYesterdayGMTDate();
         model.addAttribute("startDate",defaultStartDate);
         model.addAttribute("endDate",defaultEndDate);

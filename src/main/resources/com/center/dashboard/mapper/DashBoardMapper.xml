@@ -272,6 +272,47 @@
 
     </select>
 
+    <select id="getAWSBillingTotalCost_TOTAL" parameterType="list" resultType="billingDataVO" >
+            select A.totalDate
+                    ,truncate(sum(A.totalCost),2) as totalCost
+              from (
+
+            select total_date as totalDate
+                              ,truncate(sum(total_cost),2) as totalCost
+                          from sbc_aws_account_billinginfo
+                         where total_date in
+                            <foreach collection="dateList" item="item" separator=","
+                                     open="(" close=")">
+                                #{item}
+                            </foreach>
+                          group by total_date
+            union all
+            select total_date as totalDate
+                              ,truncate(sum(total_cost),2) as totalCost
+                          from sbc_mega_aws_account_billinginfo
+                         where total_date in
+                            <foreach collection="dateList" item="item" separator=","
+                                     open="(" close=")">
+                                #{item}
+                            </foreach>
+                          group by total_date
+            union all
+            select total_date as totalDate
+                              ,truncate(sum(total_cost),2) as totalCost
+                          from sbc_kinx_aws_account_billinginfo
+                         where total_date in
+                            <foreach collection="dateList" item="item" separator=","
+                                     open="(" close=")">
+                                #{item}
+                            </foreach>
+                          group by total_date
+
+              ) A GROUP BY A.totalDate ORDER BY totalDate desc;
+
+
+
+    </select>
+
     <select id="getAWSServiceList_CNS" parameterType="String" resultType="billingDataVO" >
         <![CDATA[
             select if(tag = '','N/A',tag) as tag
@@ -279,6 +320,34 @@
               from sbc_aws_account_billinginfo
              where total_date = #{date}
               group by tag order by totalCost desc;
+
+        ]]>
+    </select>
+
+    <select id="getAWSServiceList_TOTAL" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+                select A.tag
+                      ,truncate(sum(A.totalCost),2) as totalCost
+                  from
+                (
+                select if(tag = '','N/A',tag) as tag
+                                  ,truncate(sum(total_cost),2) as totalCost
+                              from sbc_aws_account_billinginfo
+                             where total_date = #{date}
+                              group by tag
+                union all
+                select service_name as tag
+                       ,truncate(sum(total_cost),2) as totalCost
+                  from sbc_mega_aws_account_billinginfo
+                where total_date = #{date}
+                  GROUP BY service_name
+                union all
+                select service_name as tag
+                       ,truncate(sum(total_cost),2) as totalCost
+                  from sbc_kinx_aws_account_billinginfo
+                where total_date = #{date}
+                  GROUP BY service_name
+                ) A GROUP BY A.tag ORDER BY A.totalCost desc;
 
         ]]>
     </select>
@@ -291,6 +360,38 @@
               from sbc_aws_account_billinginfo
              where total_date = #{date}
              group by product_code order by totalCost desc;
+
+        ]]>
+    </select>
+
+    <select id="getAWSProductList_TOTAL" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+            select A.productCode
+                   ,A.productName
+                   ,truncate(sum(A.totalCost), 2) AS totalCost
+              from
+            (
+                SELECT product_code AS productCode
+                , product_name AS productName
+                , truncate(sum(total_cost), 2) AS totalCost
+                FROM sbc_aws_account_billinginfo
+                WHERE total_date = #{date}
+                GROUP BY product_code
+                UNION ALL
+                SELECT product_code AS productCode
+                , product_name AS productName
+                , truncate(sum(total_cost), 2) AS totalCost
+                FROM sbc_mega_aws_account_billinginfo
+                WHERE total_date = #{date}
+                GROUP BY product_code
+                UNION ALL
+                SELECT product_code AS productCode
+                , product_name AS productName
+                , truncate(sum(total_cost), 2) AS totalCost
+                FROM sbc_kinx_aws_account_billinginfo
+                WHERE total_date = #{date}
+                GROUP BY product_code
+            ) A GROUP BY A.productCode ORDER BY totalCost desc;
 
         ]]>
     </select>
@@ -315,6 +416,142 @@
 		   WHERE B.register_date >=  CONCAT(#{startMonth},'02') AND B.register_date < CONCAT(period_add(#{endMonth},1),'02')
 		 GROUP BY B.total_date
 		ORDER BY B.register_date desc
+
+        ]]>
+    </select>
+
+    <select id="getAWSMonthlyProductCost_TOTAL" parameterType="String" resultType="billingDataVO" >
+        <![CDATA[
+            SELECT A.totalDate,
+                  truncate(SUM(A.ec2), 2)          AS 'ec2',
+                  truncate(SUM(A.dt), 2)          AS 'dt',
+                  truncate(SUM(A.rds), 2)          AS 'rds',
+                  truncate(SUM(A.s3), 2)          AS 's3',
+                  truncate(SUM(A.dms), 2)          AS 'dms',
+                  truncate(SUM(A.r53), 2)          AS 'r53',
+                  truncate(SUM(A.dc), 2)          AS 'dc',
+                  truncate(SUM(A.vpc), 2)          AS 'vpc',
+                  truncate(SUM(A.cw), 2)          AS 'cw',
+                  truncate(SUM(A.ct), 2)          AS 'ct',
+                  truncate(SUM(A.kms), 2)          AS 'kms',
+                  truncate(SUM(A.beforeCostExtra), 2) AS 'beforeCostExtra',
+                  truncate(SUM(A.totalCost), 2)        AS 'totalCost'
+            FROM
+              (
+                SELECT
+                  B.total_date                          AS totalDate,
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonEC2'
+                    THEN B.total_cost END), 2)          AS 'ec2',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDataTransfer'
+                    THEN B.total_cost END), 2)          AS 'dt',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRDS'
+                    THEN B.total_cost END), 2)          AS 'rds',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonS3'
+                    THEN B.total_cost END), 2)          AS 's3',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDatabaseMigrationSvc'
+                    THEN B.total_cost END), 2)          AS 'dms',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRoute53'
+                    THEN B.total_cost END), 2)          AS 'r53',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDirectConnect'
+                    THEN B.total_cost END), 2)          AS 'dc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonVPC'
+                    THEN B.total_cost END), 2)          AS 'vpc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonCloudWatch'
+                    THEN B.total_cost END), 2)          AS 'cw',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSCloudTrail'
+                    THEN B.total_cost END), 2)          AS 'ct',
+                  truncate(SUM(CASE WHEN B.product_code = 'awskms'
+                    THEN B.total_cost END), 2)          AS 'kms',
+                  truncate(SUM(B.before_cost_extra), 2) AS 'beforeCostExtra',
+                  truncate(SUM(B.total_cost), 2)        AS 'totalCost'
+                FROM sbc_aws_account_billinginfo_total B
+                WHERE B.register_date >= CONCAT(#{startMonth}, '02') AND B.register_date < CONCAT(period_add(#{endMonth}, 1), '02')
+                GROUP BY B.total_date
+                UNION ALL
+                SELECT
+                  B.total_date                 AS totalDate,
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonEC2'
+                    THEN B.total_cost END), 2) AS 'ec2',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDataTransfer'
+                    THEN B.total_cost END), 2) AS 'dt',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRDS'
+                    THEN B.total_cost END), 2) AS 'rds',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonS3'
+                    THEN B.total_cost END), 2) AS 's3',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDatabaseMigrationSvc'
+                    THEN B.total_cost END), 2) AS 'dms',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRoute53'
+                    THEN B.total_cost END), 2) AS 'r53',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDirectConnect'
+                    THEN B.total_cost END), 2) AS 'dc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonVPC'
+                    THEN B.total_cost END), 2) AS 'vpc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonCloudWatch'
+                    THEN B.total_cost END), 2) AS 'cw',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSCloudTrail'
+                    THEN B.total_cost END), 2) AS 'ct',
+                  truncate(SUM(CASE WHEN B.product_code = 'awskms'
+                    THEN B.total_cost END), 2) AS 'kms',
+                  truncate(
+                      (SELECT sum(x.total_cost)
+                       FROM sbc_mega_aws_account_billinginfo x
+                       WHERE x.total_date = B.total_date)
+                      - (SELECT sum(x.total_cost)
+                         FROM sbc_mega_aws_account_billinginfo x
+                         WHERE x.total_date = date_sub(B.total_date, INTERVAL 1 DAY)
+                      )
+                      , 2)                     AS 'beforeCostExtra',
+                  truncate(
+                      (SELECT sum(x.total_cost)
+                       FROM sbc_mega_aws_account_billinginfo x
+                       WHERE x.total_date = B.total_date)
+                      , 2)                     AS 'totalCost'
+                FROM sbc_mega_aws_account_billinginfo B
+                WHERE B.register_date >= CONCAT(#{startMonth}, '02') AND B.register_date < CONCAT(period_add(#{endMonth}, 1), '02')
+                GROUP BY B.total_date
+                UNION ALL
+                SELECT
+                  B.total_date                 AS totalDate,
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonEC2'
+                    THEN B.total_cost END), 2) AS 'ec2',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDataTransfer'
+                    THEN B.total_cost END), 2) AS 'dt',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRDS'
+                    THEN B.total_cost END), 2) AS 'rds',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonS3'
+                    THEN B.total_cost END), 2) AS 's3',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDatabaseMigrationSvc'
+                    THEN B.total_cost END), 2) AS 'dms',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonRoute53'
+                    THEN B.total_cost END), 2) AS 'r53',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSDirectConnect'
+                    THEN B.total_cost END), 2) AS 'dc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonVPC'
+                    THEN B.total_cost END), 2) AS 'vpc',
+                  truncate(SUM(CASE WHEN B.product_code = 'AmazonCloudWatch'
+                    THEN B.total_cost END), 2) AS 'cw',
+                  truncate(SUM(CASE WHEN B.product_code = 'AWSCloudTrail'
+                    THEN B.total_cost END), 2) AS 'ct',
+                  truncate(SUM(CASE WHEN B.product_code = 'awskms'
+                    THEN B.total_cost END), 2) AS 'kms',
+                  truncate(
+                      (SELECT sum(x.total_cost)
+                       FROM sbc_kinx_aws_account_billinginfo x
+                       WHERE x.total_date = B.total_date)
+                      - (SELECT sum(x.total_cost)
+                         FROM sbc_kinx_aws_account_billinginfo x
+                         WHERE x.total_date = date_sub(B.total_date, INTERVAL 1 DAY)
+                      )
+                      , 2)                     AS 'beforeCostExtra',
+                  truncate(
+                      (SELECT sum(x.total_cost)
+                       FROM sbc_kinx_aws_account_billinginfo x
+                       WHERE x.total_date = B.total_date)
+                      , 2)                     AS 'totalCost'
+                FROM sbc_kinx_aws_account_billinginfo B
+                WHERE B.register_date >= CONCAT(#{startMonth}, '02') AND B.register_date < CONCAT(period_add(#{endMonth}, 1), '02')
+                GROUP BY B.total_date
+              ) A GROUP BY A.totalDate order by A.totalDate desc;
 
         ]]>
     </select>

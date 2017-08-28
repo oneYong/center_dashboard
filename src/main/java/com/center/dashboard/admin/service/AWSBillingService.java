@@ -28,7 +28,8 @@ public class AWSBillingService {
     }
 
     public String getTotalCost()throws Exception{
-        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList());
+        //List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList());
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_TOTAL(CmmDate.getLastDayList());
         DecimalFormat dc = new DecimalFormat("###,###,###,###.##");
         double totalCost = 0;
 
@@ -43,7 +44,9 @@ public class AWSBillingService {
 
     public List<Double> getTotalCostList(String startDate, String endDate) throws Exception{
         List<Double> list = new ArrayList<>();
-        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList(startDate, endDate));
+        //List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(CmmDate.getLastDayList(startDate, endDate));
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_TOTAL(CmmDate.getLastDayList(startDate, endDate));
+
         String tempLabels = "";
         for(int i = billingDataVOList.size()-1; i >= 0 ; i--){
             BillingDataVO billingDataVO = billingDataVOList.get(i);
@@ -69,7 +72,8 @@ public class AWSBillingService {
         List<String> list = new ArrayList<>();
         list.add(lastDay);
 
-        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(list);
+        //List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_CNS(list);
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCost_TOTAL(list);
         DecimalFormat dc = new DecimalFormat("###,###,###,###.##");
         double totalCost = billingDataVOList.get(0).getTotalCost();
 
@@ -83,7 +87,8 @@ public class AWSBillingService {
     }
 
     public List<BillingDataVO> getProductList(String date) throws Exception{
-        List<BillingDataVO> productListCns = dashBoardMapper.getAWSProductList_CNS(date);
+        //List<BillingDataVO> productListCns = dashBoardMapper.getAWSProductList_CNS(date);
+        List<BillingDataVO> productListCns = dashBoardMapper.getAWSProductList_TOTAL(date);
 
         for(int i = 0; i < productListCns.size(); i++){
             BillingDataVO billingDataVO = productListCns.get(i);
@@ -94,7 +99,8 @@ public class AWSBillingService {
     }
 
     public List<BillingDataVO> getServiceList(String date) throws Exception{
-        List<BillingDataVO> serviceListCns = dashBoardMapper.getAWSServiceList_CNS(date);
+        //List<BillingDataVO> serviceListCns = dashBoardMapper.getAWSServiceList_CNS(date);
+        List<BillingDataVO> serviceListCns = dashBoardMapper.getAWSServiceList_TOTAL(date);
 
         for(int i = 0; i < serviceListCns.size(); i++){
             BillingDataVO billingDataVO = serviceListCns.get(i);
@@ -105,7 +111,8 @@ public class AWSBillingService {
     }
 
     public List<BillingDataVO> getMonthlyProductList(String startMonth, String endMonth) throws Exception {
-        List<BillingDataVO> list = dashBoardMapper.getAWSMonthlyProductCost_CNS(startMonth,endMonth);
+        //List<BillingDataVO> list = dashBoardMapper.getAWSMonthlyProductCost_CNS(startMonth,endMonth);
+        List<BillingDataVO> list = dashBoardMapper.getAWSMonthlyProductCost_TOTAL(startMonth,endMonth);
 
         for(int i = 0; i < list.size(); i++){
             BillingDataVO billingDataVO = list.get(i);
