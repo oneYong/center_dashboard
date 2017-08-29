@@ -58,4 +58,7 @@ public interface DashBoardMapper {
 
     // 장애 차이.(장애 등록일로 부터 오늘까지의 차이)
     Integer getFaultDayDiff() throws Exception;
+
+    // SDP 및 서비스
+    Integer getTotalUserByService(@Param("date") String date, @Param("serviceCode") String serviceCode) throws Exception;
 }
