@@ -711,4 +711,64 @@
 
     </select>
 
+    <select id="getTotalUserByService"  parameterType="String" resultType="Integer" >
+        <![CDATA[
+              select SUM(A.tcnt) as totalCnt from
+                (
+                select SUM(tcnt) as tcnt from sbc_kic_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt  from sbc_aic_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt  from sbc_eic_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt from sbc_ruc_user where svc_code = #{serviceCode} and crt_date = #{date}
+                ) A
+			]]>
+    </select>
+
+    <select id="getActTotalUserByService"  parameterType="String" resultType="Integer" >
+        <![CDATA[
+              select SUM(A.tcnt) as totalCnt from
+                (
+                select SUM(tcnt) as tcnt from sbc_kic_act_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt  from sbc_aic_act_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt  from sbc_eic_act_user where svc_code = #{serviceCode} and crt_date = #{date}
+                union all
+                select SUM(tcnt) as tcnt from sbc_ruc_act_user where svc_code = #{serviceCode} and crt_date = #{date}
+                ) A
+			]]>
+    </select>
+
+    <select id="getAWSBillingTotalCostByService_CNS" parameterType="paramVO" resultType="billingDataVO" >
+
+        select total_date as totalDate
+        ,truncate(sum(total_cost),2) as totalCost
+        from sbc_aws_account_billinginfo
+        where total_date in
+        <foreach collection="dateList" item="item" separator=","
+                 open="(" close=")">
+            #{item}
+        </foreach>
+        and tag LIKE #{serviceName}
+        group by total_date order by total_date DESC ;
+
+    </select>
+
+    <select id="getAWSBillingTotalCostByService_MEGA" parameterType="paramVO" resultType="billingDataVO" >
+
+        select total_date as totalDate
+        ,truncate(sum(total_cost),2) as totalCost
+        from sbc_mega_aws_account_billinginfo
+        where total_date in
+        <foreach collection="dateList" item="item" separator=","
+                 open="(" close=")">
+            #{item}
+        </foreach>
+        and service_name LIKE #{serviceName}
+        group by total_date order by total_date DESC ;
+
+    </select>
+
 </mapper>

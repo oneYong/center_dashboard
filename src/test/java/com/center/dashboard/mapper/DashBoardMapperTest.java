@@ -2,8 +2,11 @@ package com.center.dashboard.mapper;
 
 import com.center.dashboard.util.CmmDate;
 import com.center.dashboard.util.CmmUtils;
+import com.center.dashboard.util.EServiceCode;
+import com.center.dashboard.util.EServiceName;
 import com.center.dashboard.vo.BillingDataVO;
 import com.center.dashboard.vo.FaultDataVO;
+import com.center.dashboard.vo.ParamVO;
 import com.center.dashboard.vo.TotalUserVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -166,6 +170,61 @@ public class DashBoardMapperTest {
 
         System.out.println(list1);
 
+
+    }
+
+    @Test
+    public void test_현재전체사용자() throws Exception{
+        System.out.println(dashBoardMapper.getTotalUserByService(CmmDate.getYesterdayGMTDate(), EServiceCode.SDP.toString()));
+
+
+    }
+
+    @Test
+    public void test_누적및실시간비용() throws Exception{
+        // 누적
+        ParamVO paramVO = new ParamVO();
+        paramVO.setDateList(CmmDate.getLastDayList());
+        paramVO.setServiceName("%"+EServiceName.SDP.toString()+"%");
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCostByService_CNS(paramVO);
+
+        System.out.println(billingDataVOList);
+
+        // 실시간(어제)
+        ParamVO paramVO1 = new ParamVO();
+        List<String> list = new ArrayList<>();
+        String date = CmmDate.getYesterdayGMTDate();
+        date = date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6);
+        list.add(date);
+
+        paramVO1.setDateList(list);
+        paramVO1.setServiceName("%"+EServiceName.SDP.toString()+"%");
+        List<BillingDataVO> billingDataVOList1 = dashBoardMapper.getAWSBillingTotalCostByService_CNS(paramVO1);
+
+        System.out.println(billingDataVOList1);
+    }
+
+    @Test
+    public void test_기기당단가() throws Exception{
+        // 전월비용
+        ParamVO paramVO = new ParamVO();
+        List<String> list = new ArrayList<>();
+        String date = CmmDate.getLastDayList().get(1);
+        list.add(date);
+        paramVO.setDateList(list);
+        paramVO.setServiceName("%"+EServiceName.SDP.toString()+"%");
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCostByService_CNS(paramVO);
+
+        System.out.println(billingDataVOList);
+
+        //전월 유저
+        String date2 = CmmDate.getLastDayList().get(1).replace("-","");
+        System.out.println(date2);
+        int totalUser = dashBoardMapper.getTotalUserByService(date2,EServiceCode.SDP.toString());
+        double totalCost = billingDataVOList.get(0).getTotalCost();
+        System.out.println("전월 비용: " + totalCost);
+        System.out.println("전월 유저: " + totalUser);
+        System.out.println("기기당 단가: " + (totalCost * 1150 )/totalUser);
 
     }
 

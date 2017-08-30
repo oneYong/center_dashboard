@@ -1,9 +1,6 @@
 package com.center.dashboard.mapper;
 
-import com.center.dashboard.vo.BillingDataVO;
-import com.center.dashboard.vo.FaultDataVO;
-import com.center.dashboard.vo.TotalUserVO;
-import com.center.dashboard.vo.TotalDataVO;
+import com.center.dashboard.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -61,4 +58,7 @@ public interface DashBoardMapper {
 
     // SDP 및 서비스
     Integer getTotalUserByService(@Param("date") String date, @Param("serviceCode") String serviceCode) throws Exception;
+    Integer getActTotalUserByService(@Param("date") String date, @Param("serviceCode") String serviceCode) throws Exception;
+    List<BillingDataVO> getAWSBillingTotalCostByService_CNS(ParamVO paramVO) throws Exception;
+    List<BillingDataVO> getAWSBillingTotalCostByService_MEGA(ParamVO paramVO) throws Exception;
 }

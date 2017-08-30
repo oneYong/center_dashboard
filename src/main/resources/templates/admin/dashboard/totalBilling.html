@@ -1,40 +1,32 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div class="col-lg-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-krw fa-fw"></i> 클라우드 인프라 운영비</h3>
-        </div>
-        <div class="panel-body">
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
-                    <span style="font-size: 13px;"><th:block th:text="${title}"></th:block></span>
-                </div>
-            </div>
-            <a th:href="@{totalBillingByAWS}">
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;"><span style="font-size: 40px;color:green;"><th:block th:text="${totalCost}"></th:block></span>
-                </div>
-            </div>
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;">
-                    <span style="font-size: 22px;"><th:block th:text="${oneMonth}"></th:block>월 비용 : </span>
-                    <span style="font-size: 22px;color:green;"><th:block th:text="${oneMonthCost}"></th:block></span>
-                </div>
-            </div>
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;">
-                    <span style="font-size: 22px;"><th:block th:text="${twoMonth}"></th:block>월 비용 : </span>
-                    <span style="font-size: 22px;color:green;"><th:block th:text="${twoMonthCost}"></th:block></span>
-                </div>
-            </div>
-            </a>
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;height: 20px;">
-                </div>
-            </div>
 
-        </div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;"><h3>누적 비용 </h3>
+        <span style="font-size: 13px;"><th:block th:text="${title}"></th:block></span>
     </div>
 </div>
+<a th:href="@{totalBillingByAWS}">
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;"><span style="font-size: 40px;color:green;"><th:block th:text="${totalCost}"></th:block></span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;">
+        <span style="font-size: 22px;"><th:block th:text="${oneMonth}"></th:block>월 비용 : </span>
+        <span style="font-size: 22px;color:green;"><th:block th:text="${oneMonthCost}"></th:block></span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;">
+        <span style="font-size: 22px;"><th:block th:text="${twoMonth}"></th:block>월 비용 : </span>
+        <span style="font-size: 22px;color:green;"><th:block th:text="${twoMonthCost}"></th:block></span>
+    </div>
+</div>
+</a>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;height: 20px;">
+    </div>
+</div>
+
 </html>

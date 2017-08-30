@@ -1,30 +1,23 @@
 <html xmlns= "http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<div class="col-lg-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> 전사 회원 플랫폼 사용자</h3>
-        </div>
-        <div class="panel-body">
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;"><h3>전체 가입자(만명) </h3>
-                </div>
-            </div>
-            <a th:href="@{totalUserByRegion}">
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;"><span style="font-size: 60px;color:green;"><th:block th:text="${totalCnt}"></th:block>명</span>
-                </div>
-            </div>
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;"><span style="font-size: 33px;color:green;">▲<th:block th:text="${newTotalCnt}"></th:block>명(1day)</span>
-                </div>
-            </div>
-            <div class="list-group">
-                <div class="col-lg-12" style="text-align: center;height: 25px;">
-                </div>
-            </div>
-            </a>
-        </div>
+
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;"><h3>전체 가입자(만명) </h3>
     </div>
 </div>
+<a th:href="@{totalUserByRegion}">
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;"><span style="font-size: 60px;color:green;"><th:block th:text="${totalCnt}"></th:block>명</span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;"><span style="font-size: 33px;color:green;">▲<th:block th:text="${newTotalCnt}"></th:block>명(1day)</span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;height: 25px;">
+    </div>
+</div>
+</a>
+
 </html>

@@ -1,0 +1,51 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">전체가입자  </span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;"><th:block th:text="${totalUser}"></th:block>명 </span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">현재 사용자 </span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;">3435명 </span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">연결 기기 </span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;">13435대 </span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;height: 10px;">
+    </div>
+</div>
+<hr width="100%" />
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">실시간 비용 </span><span style="font-size: 12px;">(<th:block th:text="${realCostTitle}"></th:block>)</span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;">$ <th:block th:text="${realCost}"></th:block> </span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">누적 비용 </span><span style="font-size: 12px;">(<th:block th:text="${totalCostTitle}"></th:block>)</span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;">$ <th:block th:text="${totalCost}"></th:block> </span>
+    </div>
+</div>
+<div class="list-group">
+    <div class="col-lg-12" style="text-align: center;height: 10px;">
+    </div>
+</div>
+<hr width="100%" />
+<div class="list-group">
+    <div class="col-lg-7"><span style="font-size: 25px;">기기당 비용 </span>
+    </div>
+    <div class="col-lg-5"><span style="font-size: 25px;">$ <th:block th:text="${deviceCostByOne}"></th:block> </span>
+    </div>
+</div>
+
+</html>

@@ -42,4 +42,9 @@ public class CmmDateTest {
         System.out.println(CmmDate.getBeforeYearMonth(6));
 
     }
+
+    @Test
+    public void test() throws Exception {
+        System.out.println(CmmDate.getLastDayList().get(1));
+    }
 }

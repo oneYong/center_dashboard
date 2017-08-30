@@ -35,19 +35,14 @@ public class DashBoardController {
     private DashBoardMapper dashBoardMapper;
 
     @Autowired
-    private KICService kicService;
-
-    @Autowired
-    private AICService aicService;
-
-    @Autowired
-    private EICService eicService;
-
-    @Autowired
-    private RUCService rucService;
-
-    @Autowired
     private AWSBillingService awsBillingService;
+
+    @Autowired
+    private SDPService sdpService;
+
+    @Autowired
+    private THINQService thinqService;
+
 
     private final double LIMIT_USER = 10000.0;
 
@@ -102,221 +97,46 @@ public class DashBoardController {
         return "admin/dashboard/totalFault";
     }
 
-    @RequestMapping(value="/totalUserByRegion", method = RequestMethod.GET)
-    public String totalUserByRegion(Model model, HttpSession session, HttpServletRequest request){
-        String user_id = (String) request.getSession().getAttribute("user_id");
-        String defaultStartDate = CmmDate.getBeforeYearMonth(2);
-        String defaultEndDate = CmmDate.getYesterdayGMTDate();
-        model.addAttribute("startDate",defaultStartDate);
-        model.addAttribute("endDate",defaultEndDate);
-        if(user_id != null){
-            return "admin/totalUserByRegion";
-        }else{
-            return "admin/login";
-        }
+    @RequestMapping(value="/dashboard/totalSDP", method = RequestMethod.GET)
+    public String totalSDP(Model model) throws Exception{
+        String totalCostTitle = "01.01 ~ " + CmmDate.getYesterdayGMTDate().substring(4,6)+ "." + CmmDate.getYesterdayGMTDate().substring(6);
+        String realCostTitle = CmmDate.getYesterdayGMTDate().substring(4,6)+ "." +"01 ~ " + CmmDate.getYesterdayGMTDate().substring(4,6)+ "." + CmmDate.getYesterdayGMTDate().substring(6);
+
+        String totalUser = sdpService.getTotalUser(CmmDate.getYesterdayGMTDate());
+        String realCost = sdpService.getRealCost();
+        String totalCost = sdpService.getTotalCost();
+        String deviceCostByOne = sdpService.getDeviceCostByOne();
+
+        model.addAttribute("totalUser",totalUser);
+        model.addAttribute("realCost",realCost);
+        model.addAttribute("totalCost",totalCost);
+        model.addAttribute("deviceCostByOne",deviceCostByOne);
+
+        model.addAttribute("totalCostTitle",totalCostTitle);
+        model.addAttribute("realCostTitle",realCostTitle);
+
+        return "admin/dashboard/totalSDP";
     }
 
-    @RequestMapping(value="/totalBillingByAWS", method = RequestMethod.GET)
-    public String totalBillingByAWS(Model model, HttpSession session, HttpServletRequest request) throws Exception{
-        String user_id = (String) request.getSession().getAttribute("user_id");
-        String yesterDay = CmmDate.getYesterdayGMTDate().substring(0,6);
-        String endDate = yesterDay.substring(0,4) + yesterDay.substring(4,6);
-        String startDate = CmmDate.getBeforeYearMonth(yesterDay,5).substring(0,6);
-        startDate = startDate.substring(0,4) + startDate.substring(4,6);
-        model.addAttribute("startDate",startDate);
-        model.addAttribute("endDate",endDate);
+    @RequestMapping(value="/dashboard/totalTHINQ", method = RequestMethod.GET)
+    public String totalTHINQ(Model model) throws Exception{
+        String totalCostTitle = "01.01 ~ " + CmmDate.getYesterdayGMTDate().substring(4,6)+ "." + CmmDate.getYesterdayGMTDate().substring(6);
+        String realCostTitle = CmmDate.getYesterdayGMTDate().substring(4,6)+ "." +"01 ~ " + CmmDate.getYesterdayGMTDate().substring(4,6)+ "." + CmmDate.getYesterdayGMTDate().substring(6);
 
-        if(user_id != null){
-            return "admin/totalBillingByAWS";
-        }else{
-            return "admin/login";
-        }
+        String totalUser = thinqService.getTotalUser(CmmDate.getYesterdayGMTDate());
+        String realCost = thinqService.getRealCost();
+        String totalCost = thinqService.getTotalCost();
+        String deviceCostByOne = thinqService.getDeviceCostByOne();
+
+        model.addAttribute("totalUser",totalUser);
+        model.addAttribute("realCost",realCost);
+        model.addAttribute("totalCost",totalCost);
+        model.addAttribute("deviceCostByOne",deviceCostByOne);
+
+        model.addAttribute("totalCostTitle",totalCostTitle);
+        model.addAttribute("realCostTitle",realCostTitle);
+
+        return "admin/dashboard/totalTHINQ";
     }
 
-    @RequestMapping(value="/totalFaultByRegion", method = RequestMethod.GET)
-    public String totalFaultByRegion(Model model, HttpSession session, HttpServletRequest request) throws Exception{
-        String user_id = (String) request.getSession().getAttribute("user_id");
-
-        if(user_id != null){
-            return "admin/totalFaultByRegion";
-        }else{
-            return "admin/login";
-        }
-    }
-
-    @RequestMapping(value="/totalUserByRegion/totalUserByKIC", method = RequestMethod.GET)
-    public String totalUserByKIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
-        String pEndDate = CmmDate.getYesterdayGMTDate();
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        kicService.run(pStartDate, pEndDate);
-
-        model.addAttribute("kicLabel",kicService.getChartLabels());
-        model.addAttribute("kicDatasets",kicService.getChartDatasets());
-        model.addAttribute("kicServiceList",kicService.getServiceListToJson(pEndDate));
-
-        return "admin/totalUserByRegion/totalUserByKIC";
-    }
-
-    @RequestMapping(value="/totalUserByRegion/totalUserByAIC", method = RequestMethod.GET)
-    public String totalUserByAIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
-        String pEndDate = CmmDate.getYesterdayGMTDate();
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        aicService.run( pStartDate, pEndDate);
-        model.addAttribute("aicLabel",aicService.getChartLabels());
-        model.addAttribute("aicDatasets",aicService.getChartDatasets());
-        model.addAttribute("aicServiceList",aicService.getServiceListToJson(pEndDate));
-
-        return "admin/totalUserByRegion/totalUserByAIC";
-    }
-
-    @RequestMapping(value="/totalUserByRegion/totalUserByEIC", method = RequestMethod.GET)
-    public String totalUserByEIC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
-        String pEndDate = CmmDate.getYesterdayGMTDate();
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        eicService.run( pStartDate, pEndDate);
-        model.addAttribute("eicLabel",eicService.getChartLabels());
-        model.addAttribute("eicDatasets",eicService.getChartDatasets());
-        model.addAttribute("eicServiceList",eicService.getServiceListToJson(pEndDate));
-
-        return "admin/totalUserByRegion/totalUserByEIC";
-    }
-
-    @RequestMapping(value="/totalUserByRegion/totalUserByRUC", method = RequestMethod.GET)
-    public String totalUserByRUC(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String pStartDate = CmmDate.getAWeeksAgoGMTDate();
-        String pEndDate = CmmDate.getYesterdayGMTDate();
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        rucService.run( pStartDate, pEndDate);
-        model.addAttribute("rucLabel",rucService.getChartLabels());
-        model.addAttribute("rucDatasets",rucService.getChartDatasets());
-        model.addAttribute("rucServiceList",rucService.getServiceListToJson(pEndDate));
-        return "admin/totalUserByRegion/totalUserByRUC";
-    }
-
-    @RequestMapping(value="/totalBillingByAWS/totalBillingByGraph", method = RequestMethod.GET)
-    public String totalBillingByGraph(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String yesterDay = CmmDate.getYesterdayGMTDate().substring(0,6);
-        String pEndDate = yesterDay.substring(0,4) + yesterDay.substring(4,6);
-        String pStartDate = CmmDate.getBeforeYearMonth(yesterDay,5).substring(0,6);
-        pStartDate = pStartDate.substring(0,4) + pStartDate.substring(4,6);
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        String pYesterDate = CmmDate.getYesterdayGMTDate().substring(0,4) + "-" + CmmDate.getYesterdayGMTDate().substring(4,6) + "-" + CmmDate.getYesterdayGMTDate().substring(6);
-        // first totalCostList...
-        model.addAttribute("awsGraphDatasets",awsBillingService.getTotalCostList(startDate, endDate));
-        model.addAttribute("awsGraphLabel",awsBillingService.getChartLabels());
-        model.addAttribute("awsGraphServiceList", CmmUtils.getListToJson(awsBillingService.getServiceList(pYesterDate)));
-        model.addAttribute("awsGraphProductList", CmmUtils.getListToJson(awsBillingService.getProductList(pYesterDate)));
-
-        return "admin/totalBillingByAWS/totalBillingByGraph";
-    }
-
-    @RequestMapping(value="/totalBillingByAWS/totalBillingByList", method = RequestMethod.GET)
-    public String totalBillingByList(Model model,@RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate" , required = false) String endDate) throws Exception{
-
-        String yesterDay = CmmDate.getYesterdayGMTDate().substring(0,6);
-        String pEndDate = yesterDay.substring(0,4) + yesterDay.substring(4,6);
-        String pStartDate = CmmDate.getBeforeYearMonth(yesterDay,5).substring(0,6);
-        pStartDate = pStartDate.substring(0,4) + pStartDate.substring(4,6);
-
-        if(!startDate.equals("") && startDate != null){
-            pStartDate = startDate;
-        }
-        if(!endDate.equals("") && endDate != null){
-            pEndDate = endDate;
-        }
-
-        model.addAttribute("awsListMonthlyProductList", CmmUtils.getListToJson(awsBillingService.getMonthlyProductList(pStartDate,pEndDate)));
-
-        return "admin/totalBillingByAWS/totalBillingByList";
-    }
-
-    @RequestMapping(value="/totalFaultByRegion/totalFaultByGraph", method = RequestMethod.GET)
-    public String totalFaultByGraph(Model model,@RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth" , required = false) String endMonth) throws Exception{
-
-        String standardDate = CmmDate.getTodayGMTDate().substring(0,4) + "." + CmmDate.getTodayGMTDate().substring(4,6)+ "." + CmmDate.getTodayGMTDate().substring(6);
-        String standardMonth = CmmDate.getTodayGMTDate().substring(0,4) + "-" + CmmDate.getTodayGMTDate().substring(4,6);
-
-        String paramMonth = CmmDate.getTodayGMTDate().substring(0,4) + "-" + CmmDate.getTodayGMTDate().substring(4,6);
-        FaultDataVO faultDataVO = new FaultDataVO();
-        faultDataVO.setMonthInfo(paramMonth);
-
-        int faultTotalCount = 0;
-        List<FaultDataVO> list = dashBoardMapper.getFaultCountByRegion(faultDataVO);
-        for(int i = 0; i < list.size(); i++){
-            FaultDataVO temp = list.get(i);
-            faultTotalCount += temp.getFaultCount();
-        }
-        int faultDayDiff =  dashBoardMapper.getFaultDayDiff();
-
-        model.addAttribute("faultDayDiff",faultDayDiff);
-        model.addAttribute("standardDate",standardDate);
-        model.addAttribute("standardMonth",standardMonth);
-        model.addAttribute("faultList", CmmUtils.getListToJson(dashBoardMapper.getFaultList(new FaultDataVO())));
-        model.addAttribute("faultCountByService", CmmUtils.getListToJson(dashBoardMapper.getFaultCountByService(faultDataVO)));
-        model.addAttribute("faultCountByRegion", CmmUtils.getListToJson(dashBoardMapper.getFaultCountByRegion(faultDataVO)));
-        model.addAttribute("faultTotalCount", faultTotalCount);
-        return "admin/totalFaultByRegion/totalFaultByGraph";
-    }
-
-    @RequestMapping(value="/totalFaultByRegion/totalFaultByList", method = RequestMethod.GET)
-    public String totalFaultByList(Model model,@RequestParam(value = "startMonth", required = false) String startMonth, @RequestParam(value = "endMonth" , required = false) String endMonth) throws Exception{
-
-        FaultDataVO faultDataVO = new FaultDataVO();
-        faultDataVO.setStartMonth(startMonth);
-        faultDataVO.setEndMonth(endMonth);
-
-        model.addAttribute("faultListMonthly", CmmUtils.getListToJson(dashBoardMapper.getFaultListMonthly(faultDataVO)));
-        return "admin/totalFaultByRegion/totalFaultByList";
-    }
-
-    @RequestMapping(value="/totalFaultByRegion/totalFaultByList/getFaultList", method = RequestMethod.GET
-            , produces = "application/json; charset=utf8")
-    @ResponseBody
-    public String getFaultList(FaultDataVO faultDataVO) throws Exception{
-
-        return CmmUtils.getListToJson(dashBoardMapper.getFaultList(faultDataVO));
-    }
 }
