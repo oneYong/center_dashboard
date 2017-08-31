@@ -771,4 +771,25 @@
 
     </select>
 
+    <select id="getNationListByRegion"  parameterType="String" resultType="totalUserVO" >
+        <![CDATA[
+               select A.crt_date as crtDate
+                     ,A.tcnt as tCnt
+                     ,A.svc_code as svcCode
+                     ,A.svc_name as svcName
+                     ,A.cntry_code as cntryCode
+                     ,A.cntry_name as cntryName
+                from
+            (
+            select * FROM sbc_kic_user WHERE svc_code = #{serviceCode} AND crt_date = #{date}
+            UNION ALL
+            SELECT * FROM sbc_aic_user WHERE svc_code = #{serviceCode} AND crt_date = #{date}
+              UNION ALL
+            SELECT * FROM sbc_eic_user WHERE svc_code = #{serviceCode} AND crt_date = #{date}
+              UNION ALL
+            SELECT * FROM sbc_ruc_user WHERE svc_code = #{serviceCode} AND crt_date = #{date}
+            ) A group by A.cntry_code order by A.tcnt desc;
+			]]>
+    </select>
+
 </mapper>

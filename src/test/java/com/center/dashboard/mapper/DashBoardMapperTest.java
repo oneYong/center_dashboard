@@ -228,4 +228,10 @@ public class DashBoardMapperTest {
 
     }
 
+    @Test
+    public void test_지역별나라리스트() throws Exception {
+        List<TotalUserVO> totalUserVOList = dashBoardMapper.getNationListByRegion(CmmDate.getYesterdayGMTDate(),EServiceCode.SDP.toString());
+        System.out.println(totalUserVOList);
+    }
+
 }

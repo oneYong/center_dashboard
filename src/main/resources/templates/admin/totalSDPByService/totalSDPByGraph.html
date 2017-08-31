@@ -1,0 +1,157 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-7">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-bar-chart fa-fw"></i> SDP 그래프</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <canvas id="sdp-graph" height="263" width="500" ></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-lg-5">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-list fa-fw"></i> SDP 국가별 회원 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="sdp-graph-nation-list" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to array
+            var sdp_graph_temp_label = [[${sdpGraphLabel}]];
+
+            var sdp_graph_label = new Array();
+            for(var i = 0; i < sdp_graph_temp_label.split(",").length; i++){
+                sdp_graph_label[i] = sdp_graph_temp_label.split(",")[i];
+            }
+
+            var sdp_graph_datasets = [[${sdpGraphDatasets}]];
+
+            // to object
+            var sdp_graph_nation_list = JSON.parse([[${sdpGraphNationList}]]);
+
+            var sdp_graph_nation_more_btn = '<button id="sdp_graph_nation_more_btn" onclick="sdp_graph_full_nation_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var sdp_graph_full_nation_more_btn = '<button id="sdp_graph_full_nation_more_btn" onclick="sdp_graph_nation_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var sdp_graph_nation_html = [];
+            var sdp_graph_full_nation_html = [];
+
+
+            initSdpGraphNationList(sdp_graph_nation_list);
+
+            var sdp_chart = new Chart(document.getElementById("sdp-graph"), {
+                type: 'bar',
+                data: {
+                    labels: sdp_graph_label,
+                    datasets: [{
+                        type: 'bar',
+                        label: 'SDP Billing Info(Bar)',
+                        data: sdp_graph_datasets,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        borderColor: "#000"
+                    }, {
+                        type: 'line',
+                        label: 'SDP Billing Info(Line)',
+                        data: sdp_graph_datasets,
+                        backgroundColor: "rgba(60,186,159,0.2)",
+                        borderColor: "rgba(60,186,159,1)",
+                        fill:false
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: "time",
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 7  },
+                            time: {
+                                unit: 'month',
+                                round: 'month',
+                                displayFormats: {
+                                    month: 'YYYY-MM'
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                                // OR //
+                                beginAtZero: true, // minimum value will be 0.
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+                                }
+                            }
+                        }]
+                    }
+                }
+            });
+
+            function initSdpGraphNationList(nationList){
+
+                sdp_graph_nation_html.push('<table class="table table-bordered table-hover table-striped">');
+                sdp_graph_nation_html.push('<thead> <tr><th>No</th><th>국가명</th><th>회원수</th></tr></thead>');
+                sdp_graph_nation_html.push('<tbody>');
+
+                sdp_graph_full_nation_html.push('<table class="table table-bordered table-hover table-striped">');
+                sdp_graph_full_nation_html.push('<thead> <tr><th>No</th><th>국가명</th><th>회원수</th></tr></thead>');
+                sdp_graph_full_nation_html.push('<tbody>');
+
+                for (var i=0; i< nationList.length; i++) {
+                    var nation_name = nationList[i].cntryCode + "(" + nationList[i].cntryName + ")";
+
+                    // full
+                    sdp_graph_full_nation_html.push('<tr>');
+                    sdp_graph_full_nation_html.push('<td>' + (i+1) +'</td>');
+                    sdp_graph_full_nation_html.push('<td class="chart-legend-label-text" >'
+
+                        + nation_name +'</td>');
+                    sdp_graph_full_nation_html.push('<td align="right"  class="chart-legend-label-text">'+nationList[i].tCnt.format() +'</td>');
+                    sdp_graph_full_nation_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        sdp_graph_nation_html.push('<tr>');
+                        sdp_graph_nation_html.push('<td>' + (i+1) +'</td>');
+                        sdp_graph_nation_html.push('<td class="chart-legend-label-text" >'
+
+                            + nation_name +'</td>');
+                        sdp_graph_nation_html.push('<td align="right"  class="chart-legend-label-text">'+nationList[i].tCnt.format()+'</td>');
+                        sdp_graph_nation_html.push('</tr>');
+                    }
+
+                }
+
+                sdp_graph_nation_html.push('</tbody>');
+                sdp_graph_nation_html.push('</table>');
+                sdp_graph_nation_html.push(sdp_graph_nation_more_btn);
+
+                sdp_graph_full_nation_html.push('</tbody>');
+                sdp_graph_full_nation_html.push('</table>');
+                sdp_graph_full_nation_html.push(sdp_graph_full_nation_more_btn);
+
+                document.getElementById('sdp-graph-nation-list').innerHTML =  sdp_graph_nation_html.join("");
+            }
+
+            function sdp_graph_nation_more_view(){ // 줄이기
+                document.getElementById('sdp-graph-nation-list').innerHTML = sdp_graph_nation_html.join("");
+            }
+
+            function sdp_graph_full_nation_more_view(){ // 더보기
+                document.getElementById('sdp-graph-nation-list').innerHTML = sdp_graph_full_nation_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

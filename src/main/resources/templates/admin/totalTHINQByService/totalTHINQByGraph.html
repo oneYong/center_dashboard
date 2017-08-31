@@ -1,0 +1,157 @@
+<html xmlns= "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<div class="col-lg-7">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-bar-chart fa-fw"></i> THINQ 그래프</h3>
+        </div>
+        <div class="panel-body" style="overflow: hidden;">
+            <canvas id="thinq-graph" height="263" width="500" ></canvas>
+        </div>
+    </div>
+</div>
+<div class="col-lg-5">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-list fa-fw"></i> THINQ 국가별 회원 리스트</h3>
+        </div>
+        <div class="panel-body">
+            <div id="thinq-graph-nation-list" class="chart-legend"></div>
+
+        </div>
+    </div>
+</div>
+    <th:block>
+        <script type="text/javascript" th:inline="javascript">
+            /*<![CDATA[*/
+
+            // to array
+            var thinq_graph_temp_label = [[${thinqGraphLabel}]];
+
+            var thinq_graph_label = new Array();
+            for(var i = 0; i < thinq_graph_temp_label.split(",").length; i++){
+                thinq_graph_label[i] = thinq_graph_temp_label.split(",")[i];
+            }
+
+            var thinq_graph_datasets = [[${thinqGraphDatasets}]];
+
+            // to object
+            var thinq_graph_nation_list = JSON.parse([[${thinqGraphNationList}]]);
+
+            var thinq_graph_nation_more_btn = '<button id="thinq_graph_nation_more_btn" onclick="thinq_graph_full_nation_more_view()" type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >더보기</span></button>';
+            var thinq_graph_full_nation_more_btn = '<button id="thinq_graph_full_nation_more_btn" onclick="thinq_graph_nation_more_view()"  type="button" class="btn btn-sm" style="width:100%;color: #fff;background-color:#62A0CA;"><span >줄이기</span></button>';
+            var thinq_graph_nation_html = [];
+            var thinq_graph_full_nation_html = [];
+
+
+            initThinqGraphNationList(thinq_graph_nation_list);
+
+            var thinq_chart = new Chart(document.getElementById("thinq-graph"), {
+                type: 'bar',
+                data: {
+                    labels: thinq_graph_label,
+                    datasets: [{
+                        type: 'bar',
+                        label: 'thinq Billing Info(Bar)',
+                        data: thinq_graph_datasets,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                        borderColor: "#000"
+                    }, {
+                        type: 'line',
+                        label: 'thinq Billing Info(Line)',
+                        data: thinq_graph_datasets,
+                        backgroundColor: "rgba(60,186,159,0.2)",
+                        borderColor: "rgba(60,186,159,1)",
+                        fill:false
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: "time",
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 7  },
+                            time: {
+                                unit: 'month',
+                                round: 'month',
+                                displayFormats: {
+                                    month: 'YYYY-MM'
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0, // minimum will be 0, unless there is a lower value.
+                                // OR //
+                                beginAtZero: true, // minimum value will be 0.
+                                callback: function (value, index, values) {
+                                    if(parseInt(value) == value)
+                                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+                                }
+                            }
+                        }]
+                    }
+                }
+            });
+
+            function initThinqGraphNationList(nationList){
+
+                thinq_graph_nation_html.push('<table class="table table-bordered table-hover table-striped">');
+                thinq_graph_nation_html.push('<thead> <tr><th>No</th><th>국가명</th><th>회원수</th></tr></thead>');
+                thinq_graph_nation_html.push('<tbody>');
+
+                thinq_graph_full_nation_html.push('<table class="table table-bordered table-hover table-striped">');
+                thinq_graph_full_nation_html.push('<thead> <tr><th>No</th><th>국가명</th><th>회원수</th></tr></thead>');
+                thinq_graph_full_nation_html.push('<tbody>');
+
+                for (var i=0; i< nationList.length; i++) {
+                    var nation_name = nationList[i].cntryCode + "(" + nationList[i].cntryName + ")";
+
+                    // full
+                    thinq_graph_full_nation_html.push('<tr>');
+                    thinq_graph_full_nation_html.push('<td>' + (i+1) +'</td>');
+                    thinq_graph_full_nation_html.push('<td class="chart-legend-label-text" >'
+
+                        + nation_name +'</td>');
+                    thinq_graph_full_nation_html.push('<td align="right"  class="chart-legend-label-text">'+nationList[i].tCnt.format() +'</td>');
+                    thinq_graph_full_nation_html.push('</tr>');
+
+                    // limit
+                    if(i < 10){
+                        thinq_graph_nation_html.push('<tr>');
+                        thinq_graph_nation_html.push('<td>' + (i+1) +'</td>');
+                        thinq_graph_nation_html.push('<td class="chart-legend-label-text" >'
+
+                            + nation_name +'</td>');
+                        thinq_graph_nation_html.push('<td align="right"  class="chart-legend-label-text">'+nationList[i].tCnt.format()+'</td>');
+                        thinq_graph_nation_html.push('</tr>');
+                    }
+
+                }
+
+                thinq_graph_nation_html.push('</tbody>');
+                thinq_graph_nation_html.push('</table>');
+                thinq_graph_nation_html.push(thinq_graph_nation_more_btn);
+
+                thinq_graph_full_nation_html.push('</tbody>');
+                thinq_graph_full_nation_html.push('</table>');
+                thinq_graph_full_nation_html.push(thinq_graph_full_nation_more_btn);
+
+                document.getElementById('thinq-graph-nation-list').innerHTML =  thinq_graph_nation_html.join("");
+            }
+
+            function thinq_graph_nation_more_view(){ // 줄이기
+                document.getElementById('thinq-graph-nation-list').innerHTML = thinq_graph_nation_html.join("");
+            }
+
+            function thinq_graph_full_nation_more_view(){ // 더보기
+                document.getElementById('thinq-graph-nation-list').innerHTML = thinq_graph_full_nation_html.join("");
+            }
+
+            /*]]>*/
+        </script>
+
+    </th:block>
+</html>

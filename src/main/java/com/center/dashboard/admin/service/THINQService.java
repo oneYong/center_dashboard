@@ -6,6 +6,7 @@ import com.center.dashboard.util.EServiceCode;
 import com.center.dashboard.util.EServiceName;
 import com.center.dashboard.vo.BillingDataVO;
 import com.center.dashboard.vo.ParamVO;
+import com.center.dashboard.vo.TotalUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,47 @@ import java.util.List;
 public class THINQService {
     @Autowired
     private DashBoardMapper dashBoardMapper;
+
+    private String chartLabels = "";
+
+    public String getChartLabels() throws Exception {
+        return chartLabels;
+    }
+
+    // chart 필요한 리스트
+    public List<Double> getTotalCostList(String startDate, String endDate) throws Exception{
+        List<Double> list = new ArrayList<>();
+        ParamVO paramVO = new ParamVO();
+        paramVO.setDateList(CmmDate.getLastDayList(startDate, endDate));
+        paramVO.setServiceName("%"+ EServiceName.THINQ.toString()+"%");
+        List<BillingDataVO> billingDataVOList = dashBoardMapper.getAWSBillingTotalCostByService_MEGA(paramVO);
+        String tempLabels = "";
+
+        for(int i = billingDataVOList.size()-1; i >= 0 ; i--){
+            BillingDataVO billingDataVO = billingDataVOList.get(i);
+            list.add(billingDataVO.getTotalCost());
+
+            tempLabels = getString(billingDataVOList, tempLabels, i, billingDataVO);
+        }
+
+        chartLabels = tempLabels;
+
+        return list;
+    }
+
+        private String getString(List<BillingDataVO> billingDataVOList, String tempLabels, int i, BillingDataVO billingDataVO) {
+            if(i == billingDataVOList.size()-1){
+                tempLabels = billingDataVO.getTotalDate();
+            }else{
+                tempLabels += "," + billingDataVO.getTotalDate();
+            }
+            return tempLabels;
+        }
+
+    // Nation List
+    public List<TotalUserVO> getNationListByRegion(String date) throws Exception {
+        return dashBoardMapper.getNationListByRegion(date,EServiceCode.THINQ.toString());
+    }
 
     // date 에 해당하는 SDP 현재 사용자를 구함
     public String getTotalUser(String date) throws Exception {
